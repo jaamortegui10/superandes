@@ -6,22 +6,22 @@ public class Sucursal implements VOSucursal{
 	private String nombre;
 	private int tamanho;
 	private String direccion;
-	private long idCiudad;
 	private int nivelReorden;
 	private int nivelReAbastecimiento;
+	private long idCiudad;
 	
 	
 	
-	public Sucursal(long id, String nombre, int tamanho, String direccion, long idCiudad, int nivelReorden,
-			int nivelReAbastecimiento) {
+	public Sucursal(long id, String nombre, int tamanho, String direccion, int nivelReorden,
+			int nivelReAbastecimiento , long idCiudad) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.tamanho = tamanho;
 		this.direccion = direccion;
-		this.idCiudad = idCiudad;
 		this.nivelReorden = nivelReorden;
 		this.nivelReAbastecimiento = nivelReAbastecimiento;
+		this.idCiudad = idCiudad;
 	}
 	
 	

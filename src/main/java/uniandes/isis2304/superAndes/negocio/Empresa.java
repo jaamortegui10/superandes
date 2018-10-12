@@ -1,13 +1,25 @@
 package uniandes.isis2304.superAndes.negocio;
 
 public class Empresa implements VOEmpresa{
+	
+	/* ****************************************************
+	 *  Constantes
+	 ******************************************************/
+	public static final String PROVEEDOR = "proveedor";
+	public static final String CLIENTE = "cliente";
+	
+	/* ****************************************************
+	 *  Atributos
+	 ******************************************************/
 	private int nit;
 	private long idUser;
 	private String direccion;
 	private int puntosCompras;
 	private String tipoEmpresa;
 	
-	
+	/* ****************************************************
+	 *  Métodos
+	 ******************************************************/
 	public Empresa()
 	{
 		

@@ -2,6 +2,9 @@ package uniandes.isis2304.superAndes.negocio;
 
 public class Persona implements VOPersona{
 	
+	public static String TIPO_CLIENTE = "cliente";
+	public static String TIPO_TRABAJADOR_SUCURSAL = "trabajador_sucursal";
+	
 	private int cedula;
 	private long idUser;
 	private int puntosCompras;

@@ -5,11 +5,13 @@ public class Promocion implements VOPromocion{
 	private long id;
 	private long idSucursal;
 	private String descripcion;
-	public Promocion(long id, long idSucursal, String descripcion) {
+	private String tipo;
+	public Promocion(long id, long idSucursal, String descripcion, String tipo) {
 		super();
 		this.id = id;
 		this.idSucursal = idSucursal;
 		this.descripcion = descripcion;
+		this.tipo = tipo;
 	}
 	public long getId() {
 		return id;
@@ -29,6 +31,14 @@ public class Promocion implements VOPromocion{
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+	
+	
 	
 	
 	

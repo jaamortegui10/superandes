@@ -2,9 +2,10 @@ package uniandes.isis2304.superAndes.negocio;
 
 public class PromocionPorcentajeDescuento implements VOPromocionPorcentajeDescuento{
 	
+	private long idProductoOfrecido;
 	private long idPromocion;
 	private int porcentajeDescuento;
-	private long idProductoOfrecido;
+	
 	
 	
 	public PromocionPorcentajeDescuento()
@@ -14,7 +15,7 @@ public class PromocionPorcentajeDescuento implements VOPromocionPorcentajeDescue
 	
 	
 	
-	public PromocionPorcentajeDescuento(long idPromocion, int porcentajeDescuento, long idProductoOfrecido) {
+	public PromocionPorcentajeDescuento(long idProductoOfrecido, long idPromocion, int porcentajeDescuento ) {
 		super();
 		this.idPromocion = idPromocion;
 		this.porcentajeDescuento = porcentajeDescuento;

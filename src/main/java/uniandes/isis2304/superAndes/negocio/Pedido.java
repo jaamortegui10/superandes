@@ -1,6 +1,17 @@
 package uniandes.isis2304.superAndes.negocio;
 
 public class Pedido implements VOPedido{
+	
+	public static final String ESTADO_POR_ENTREGAR = "por_entregar";
+	public static final String ESTADO_ENTREGADO = "entregado";
+	
+	public static final String CALIDAD_MUY_MALA = "muy_mala";
+	public static final String CALIDAD_MALA = "mala";
+	public static final String CALIDAD_REGULAR = "regular";
+	public static final String CALIDAD_BUENA = "buena";
+	public static final String CALIDAD_MUY_BUENA = "muy_buena";
+	
+	
 	private long id;
 	private long idSucursal;
 	private int nitProveedor;
@@ -11,7 +22,7 @@ public class Pedido implements VOPedido{
 	private String calidad;
 	private int calificacion;
 	
-	public Pedido(int id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega, String calidad, int calificacion) {
+	public Pedido(long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega, String calidad, int calificacion) {
 		super();
 		this.id = id;
 		this.idSucursal = idSucursal;
