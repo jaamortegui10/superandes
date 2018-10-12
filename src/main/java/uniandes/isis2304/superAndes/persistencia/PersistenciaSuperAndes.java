@@ -31,7 +31,7 @@ import uniandes.isis2304.superAndes.negocio.ProductoFisico;
 import uniandes.isis2304.superAndes.negocio.ProductoPedido;
 import uniandes.isis2304.superAndes.negocio.Promocion;
 import uniandes.isis2304.superAndes.negocio.PromocionPaqueteProductos;
-import uniandes.isis2304.superAndes.negocio.PromocionPorCantidadOUnidades;
+import uniandes.isis2304.superAndes.negocio.PromocionPorCantidadOUnidad;
 import uniandes.isis2304.superAndes.negocio.PromocionPorcentajeDescuento;
 import uniandes.isis2304.superAndes.negocio.ProveedorSucursal;
 import uniandes.isis2304.superAndes.negocio.Sucursal;
@@ -875,7 +875,7 @@ public class PersistenciaSuperAndes {
 		}
     }
     
-    public PromocionPorCantidadOUnidades  agregarPromocionPorCantidadOUnidad(  long idOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas)
+    public PromocionPorCantidadOUnidad  agregarPromocionPorCantidadOUnidad(  long idOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas)
     {
     	PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -887,7 +887,7 @@ public class PersistenciaSuperAndes {
 			tx.commit();
 			
 			log.trace("Inserción de PromocionPorCantidadOUnidades: " + idPromocion +"," + idOfrecido + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new PromocionPorCantidadOUnidades(idOfrecido, idPromocion, cantidadOUnidadesPagadas, cantidadOUnidadesCompradas);
+			return new PromocionPorCantidadOUnidad(idOfrecido, idPromocion, cantidadOUnidadesPagadas, cantidadOUnidadesCompradas);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));

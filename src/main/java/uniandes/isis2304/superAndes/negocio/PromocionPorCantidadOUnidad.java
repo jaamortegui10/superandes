@@ -1,18 +1,18 @@
 package uniandes.isis2304.superAndes.negocio;
 
-public class PromocionPorCantidadOUnidades implements VOPromocionPorCantidadOUnidades{
+public class PromocionPorCantidadOUnidad implements VOPromocionPorCantidadOUnidades{
 	private long idProductoOfrecido;
 	private long idPromocion;
 	private int cantidadOUnidadesPagadas;
 	private int cantidadOUnidadesCompradas;
 	
 	
-	public PromocionPorCantidadOUnidades()
+	public PromocionPorCantidadOUnidad()
 	{
 		
 	}
 
-	public PromocionPorCantidadOUnidades(long idProductoOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas) {
+	public PromocionPorCantidadOUnidad(long idProductoOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas) {
 		super();
 		this.idPromocion = idPromocion;
 		this.cantidadOUnidadesPagadas = cantidadOUnidadesPagadas;

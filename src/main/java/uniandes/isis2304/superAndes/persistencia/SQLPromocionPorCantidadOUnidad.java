@@ -3,7 +3,7 @@ package uniandes.isis2304.superAndes.persistencia;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import uniandes.isis2304.superAndes.negocio.PromocionPorCantidadOUnidades;
+import uniandes.isis2304.superAndes.negocio.PromocionPorCantidadOUnidad;
 
 public class SQLPromocionPorCantidadOUnidad {
 	/* ****************************************************************
@@ -50,11 +50,11 @@ public class SQLPromocionPorCantidadOUnidad {
 	 * @param idPromocion
 	 * @return
 	 */
-	public PromocionPorCantidadOUnidades darPromocionPorIdPromocion(PersistenceManager pm, long idPromocion)
+	public PromocionPorCantidadOUnidad darPromocionPorIdPromocion(PersistenceManager pm, long idPromocion)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaPromocionPorCantidadOUnidad() + " WHERE idPromocion = ?");
-		q.setResultClass(PromocionPorCantidadOUnidades.class);
+		q.setResultClass(PromocionPorCantidadOUnidad.class);
 		q.setParameters(idPromocion);
-		return (PromocionPorCantidadOUnidades) q.executeUnique();
+		return (PromocionPorCantidadOUnidad) q.executeUnique();
 	}
 }

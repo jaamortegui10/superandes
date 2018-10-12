@@ -7,22 +7,22 @@
 --Creación del secuenciador.
 CREATE sequence SuperAndes_sequence;
 --Creación de la tabla User y especificación de sus restricciones
-CREATE TABLE A_USER (id Number, password varchar(20), nombre varchar(40), correo varchar(30), tipo varchar(20)),
-CONSTRAINT A_USER_PK PRIMARY KEY (id);
+CREATE TABLE A_USUARIO (id Number, password varchar(20), nombre varchar(40), correo varchar(30), tipo varchar(20),
+CONSTRAINT A_USUARIO_PK PRIMARY KEY (id));
 
-ALTER TABLE A_USER
-ADD CONSTRAINT A_USER_tipo 
+ALTER TABLE A_USUARIO
+ADD CONSTRAINT A_USUARIO_tipo 
 CHECK ()tipo IN ('empresa', 'persona'))
 ENABLE;
 
 --Creación de la tabla Empresas
-CREATE TABLE A_EMPRESA (NIT Number, idUser Number, dir varchar(30), puntos Number, tipoEmpresa varchar(10)),
-CONSTRAINT A_EMPRESA_PK PRIMARY KEY (NIT);
+CREATE TABLE A_EMPRESA (NIT Number, idUser Number, dir varchar(30), puntos Number, tipoEmpresa varchar(10),
+CONSTRAINT A_EMPRESA_PK PRIMARY KEY (NIT));
 
 ALTER TABLE A_EMPRESA
 ADD CONSTRAINT A_EMPRESA_FK_idUser
 FOREIGN KEY (idUser)
-REFERENCES A_USER
+REFERENCES A_USUARIO
 ENABLE;
 
 ALTER TABLE A_EMPRESA
@@ -31,13 +31,13 @@ CHECK (tipoEmpresa IN ('cliente', 'proveedor'))
 ENABLE;
 
 --Creación de la tabla Personas
-CREATE TABLE A_PERSONA(cedula Number,idUser Number, puntos Number, idSucursal Number, tipoPersona varchar(10)),
-CONSTRAINT A_PERSONA_PK PRIMARY KEY (cedula);
+CREATE TABLE A_PERSONA(cedula Number,idUser Number, puntos Number, idSucursal Number, tipoPersona varchar(10),
+CONSTRAINT A_PERSONA_PK PRIMARY KEY (cedula));
 
 ALTER TABLE A_PERSONA
 ADD CONSTRAINT A_PERSONA_FK_idUser
 FOREIGN KEY (idUser)
-REFERENCES A_USER
+REFERENCES A_USUARIO
 ENABLE;
 
 ALTER TABLE A_PERSONA
@@ -47,12 +47,12 @@ ENABLE;
 
 
 --Creación de la tabla Ciudad
-CREATE TABLE A_CIUDAD(id Number, nombre varchar(30)),
-CONSTRAINT A_CIUDAD_PK PRIMARY KEY (id);
+CREATE TABLE A_CIUDAD(id Number, nombre varchar(30),
+CONSTRAINT A_CIUDAD_PK PRIMARY KEY (id));
 
 --Creación de la tabla Sucursales
-CREATE TABLE A_SUCURSAL (id Number, nombre varchar (30), tamanho Number, direccion varchar(30), nivelReorden Number, nivelReabastecimiento Number, idCiudad Number),
-CONSTRAINT A_SUCURSAL_PK PRIMARY KEY (id);
+CREATE TABLE A_SUCURSAL (id Number, nombre varchar (30), tamanho Number, direccion varchar(30), nivelReorden Number, nivelReabastecimiento Number, idCiudad Number,
+CONSTRAINT A_SUCURSAL_PK PRIMARY KEY (id));
 
 ALTER TABLE A_SUCURSAL 
 ADD CONSTRAINT A_SUCURSAL_FK_idCiudad 
@@ -61,8 +61,8 @@ REFERENCES A_CIUDAD
 ENABLE;
 
 --Creación de la tabla ProveedoresSucursales
-CREATE TABLE A_PROVEEDORSUCURSAL(idSucursal Number, NITProveedor Number),
-CONSTRAINT A_PROVEEDORSUCURSAL_PK PRIMARY KEY (idSucursal, NITProveedor);
+CREATE TABLE A_PROVEEDORSUCURSAL(idSucursal Number, NITProveedor Number,
+CONSTRAINT A_PROVEEDORSUCURSAL_PK PRIMARY KEY (idSucursal, NITProveedor));
 
 ALTER TABLE A_PROVEEDORSUCURSAL
 ADD CONSTRAINT A_PROVEEDORSUCURSAL_FK_idSucursal
@@ -78,8 +78,8 @@ ENABLE;
 
 --Creación de la tabla A_CATEGORIA
 
-CREATE TABLE A_CATEGORIA(nombre varchar(30), caracteristicas varchar(100), almacenamiento varchar(20), manejo varchar(40)),
-CONSTRAINT A_CATEGORIA_PK PRIMARY KEY (nombre);
+CREATE TABLE A_CATEGORIA(nombre varchar(30), caracteristicas varchar(100), almacenamiento varchar(20), manejo varchar(40),
+CONSTRAINT A_CATEGORIA_PK PRIMARY KEY (nombre));
 
 ALTER TABLE A_CATEGORIA
 ADD CONSTRAINT A_CATEGORIA_almacenamiento 
@@ -87,8 +87,8 @@ CHECK almacenamiento IN ('Nevera', 'Granos', 'Cereales');
 
 --Creación de la tabla A_CONTENEDOR
 
-CREATE TABLE A_CONTENEDOR(id Number, idSucursal Number, tipo varchar(20), capacidad Number, capacidadOcupada Number),
-CONSTRAINT A_CONTENEDOR_PK PRIMARY KEY (id);
+CREATE TABLE A_CONTENEDOR(id Number, idSucursal Number, tipo varchar(20), capacidad Number, capacidadOcupada Number,
+CONSTRAINT A_CONTENEDOR_PK PRIMARY KEY (id));
 
 ALTER TABLE A_CONTENEDOR
 ADD CONSTRAINT A_CONTENEDOR_FK_idSucursal
@@ -108,19 +108,19 @@ ENABLE;
 
 --Creación de la tabla A_CARRITO
 
-CREATE TABLE A_CARRITO(id Number, idUser Number),
-CONSTRAINT A_CARRITO_PK PRIMARY KEY (id);
+CREATE TABLE A_CARRITO(id Number, idUser Number,
+CONSTRAINT A_CARRITO_PK PRIMARY KEY (id));
 
 ALTER TABLE A_CARRITO
 ADD CONSTRAINT A_CARRITO_FK_NITProveedor
 FOREIGN KEY (idUser)
-REFERENCES A_USER
+REFERENCES A_USUARIO
 ENABLE;
 
 
 --Creación de la tabla A_PRODUCTOABSTRACTO
-CREATE TABLE A_PRODUCTOABSTRACTO(id Number, nombre varchar(30), tipo varchar(20), unidadMedida varchar(2), categoria varchar(30)),
-CONSTRAINT A_PRODUCTOABSTRACTO_PK PRIMARY KEY (id);
+CREATE TABLE A_PRODUCTOABSTRACTO(id Number, nombre varchar(30), tipo varchar(20), unidadMedida varchar(2), categoria varchar(30),
+CONSTRAINT A_PRODUCTOABSTRACTO_PK PRIMARY KEY (id));
 
 ALTER TABLE A_PRODUCTOABSTRACTO
 ADD CONSTRAINT A_PRODUCTOABSTRACTO_FK_categoria
@@ -129,8 +129,8 @@ REFERENCES A_CATEGORIA
 ENABLE;
 
 --Creación de la tabla OfrecidosSucursales
-CREATE TABLE A_OFRECIDOSUCURSAL(idAbstracto Number, idSucursal Number, precio Number),
-CONSTRAINT A_OFRECIDOSUCURSAL_PK PRIMARY KEY (idAbstracto, idSucursal);
+CREATE TABLE A_OFRECIDOSUCURSAL(idAbstracto Number, idSucursal Number, precio Number,
+CONSTRAINT A_OFRECIDOSUCURSAL_PK PRIMARY KEY (idAbstracto, idSucursal));
 
 ALTER TABLE A_OFRECIDOSUCURSAL
 ADD CONSTRAINT A_OFRECIDOSUCURSAL_FK_idSucursal
@@ -145,8 +145,8 @@ REFERENCES A_PRODUCTOABSTRACTO
 ENABLE;
 
 --Creación de la tabla A_OFRECIDOPROVEEDOR
-CREATE TABLE A_OFRECIDOPROVEEDOR(idAbstracto, NITProveedor, precio),
-CONSTRAINT A_OFRECIDOPROVEEDOR_PK PRIMARY KEY (idOfrecido, NITProveedor);
+CREATE TABLE A_OFRECIDOPROVEEDOR(idAbstracto, NITProveedor, precio,
+CONSTRAINT A_OFRECIDOPROVEEDOR_PK PRIMARY KEY (idOfrecido, NITProveedor));
 
 ALTER TABLE A_OFRECIDOPROVEEDOR
 ADD CONSTRAINT A_OFRECIDOPROVEEDOR_FK_NITProveedor
@@ -161,8 +161,8 @@ REFERENCES A_PRODUCTOABSTRACTO
 ENABLE;
 
 --Creación de la tabla A_PRODUCTOFISICO
-CREATE TABLE A_PRODUCTOFISICO(id Number, idOfrecido Number, cantidadMedida Number, codigoBarras varchar(20), idContenedor Number, idCarrito Number),
-CONSTRAINT A_PRODUCTOFISICO_PK PRIMARY KEY (id);
+CREATE TABLE A_PRODUCTOFISICO(id Number, idOfrecido Number, cantidadMedida Number, codigoBarras varchar(20), idContenedor Number, idCarrito Number,
+CONSTRAINT A_PRODUCTOFISICO_PK PRIMARY KEY (id));
 
 ALTER TABLE A_PRODUCTOFISICO
 ADD CONSTRAINT A_PRODUCTOFISICO_FK_idOfrecido
@@ -186,8 +186,8 @@ ENABLE;
 
 
 --Creación de tabla Pedido
-CREATE TABLE A_PEDIDO  (id Number, idSucursal Number, NITProveedor Number, precio Number, estado varchar(10), fechaEntrega varchar(10), calidad varchar(15), calificacion Number),
-CONSTRAINT A_PEDIDO_PK PRIMARY KEY (id);
+CREATE TABLE A_PEDIDO  (id Number, idSucursal Number, NITProveedor Number, precio Number, estado varchar(10), fechaEntrega varchar(10), calidad varchar(15), calificacion Number,
+CONSTRAINT A_PEDIDO_PK PRIMARY KEY (id));
 
 ALTER TABLE A_PEDIDO
 ADD CONSTRAINT A_PEDIDO_FK_idSucursal
@@ -217,8 +217,8 @@ CHECK (calificacion IN (1,2,3,4,5))
 ENABLE;
 
 --Creación de tabla A_PRODUCTOPEDIDO
-CREATE TABLE A_PRODUCTOPEDIDO(idPedido Number, idProductoOfrecido Number, cantidad Number)
-CONSTRAINT A_PRODUCTOPEDIDO_PK PRIMARY KEY (idPedido, idProductoOfrecido);
+CREATE TABLE A_PRODUCTOPEDIDO(idPedido Number, idProductoOfrecido Number, cantidad Number,
+CONSTRAINT A_PRODUCTOPEDIDO_PK PRIMARY KEY (idPedido, idProductoOfrecido));
 
 ALTER TABLE A_PRODUCTOPEDIDO
 ADD CONSTRAINT A_PRODUCTOPEDIDO_FK_idPedido
@@ -233,8 +233,8 @@ REFERENCES A_OFRECIDOPROVEEDOR
 ENABLE;
 
 --Creación de tabla Promociones
-CREATE TABLE A_PROMOCION(id Number, idSucursal Number, descripcion varchar(130), tipo varchar(20)),
-CONSTRAINT A_PROMOCION_PK PRIMARY KEY (id);
+CREATE TABLE A_PROMOCION(id Number, idSucursal Number, descripcion varchar(130), tipo varchar(20),
+CONSTRAINT A_PROMOCION_PK PRIMARY KEY (id));
 
 ALTER TABLE A_PROMOCION
 ADD CONSTRAINT A_PROMOCION_FK_idSucursal
@@ -248,8 +248,8 @@ CHECK (tipo IN ('pague_n_lleve_m', 'pague_x_lleve_y', 'porcentaje_descuento', 'p
 ENABLE;
 
 --Creación de tabla PromocionesPorCantidadOUnidad
-CREATE TABLE A_PROMOCIONPORCANTIDADOUNIDAD(idProductoOfrecido Number, idPromocion Number, cantidadOUnidadesPagadas Number, cantidadOUnidadesCompradas Number),
-CONSTRAINT A_PROMOCIONPORCANTIDADOUNIDAD_PK PRIMARY KEY (idProductoOfrecido);--Revisar <-- <-- <-- <--
+CREATE TABLE A_PROMOCIONPORCANTIDADOUNIDAD(idProductoOfrecido Number, idPromocion Number, cantidadOUnidadesPagadas Number, cantidadOUnidadesCompradas Number,
+CONSTRAINT A_PROMOCIONPORCANTIDADOUNIDAD_PK PRIMARY KEY (idProductoOfrecido));--Revisar <-- <-- <-- <--
 
 ALTER TABLE A_PROMOCIONPORCANTIDADOUNIDAD
 ADD CONSTRAINT A_PROMOCIONPORCANTIDADOUNIDAD_FK_idProductoOfrecido
@@ -264,8 +264,8 @@ REFERENCES A_PROMOCION
 ENABLE;
 
 --Creación de la tabla PromocionesPorcentajeDescuento
-CREATE TABLE A_PROMOCIONPORCENTAJEDESCUENTO(idProductoOfrecido Number, idPromocion Number, porcentajeDescuento Number),
-CONSTRAINT A_PROMOCIONPORCENTAJEDESCUENTO_PK PRIMARY KEY (idProductoOfrecido Number);
+CREATE TABLE A_PROMOCIONPORCENTAJEDESCUENTO(idProductoOfrecido Number, idPromocion Number, porcentajeDescuento Number,
+CONSTRAINT A_PROMOCIONPORCENTAJEDESCUENTO_PK PRIMARY KEY (idProductoOfrecido Number));
 
 ALTER TABLE A_PROMOCIONPORCENTAJEDESCUENTO
 ADD CONSTRAINT A_PROMOCIONPORCENTAJEDESCUENTO_FK_idProductoOfrecido
@@ -280,8 +280,8 @@ REFERENCES A_PROMOCION
 ENABLE;
 
 --Creación de la tabla PromocionesPaqueteProductos
-CREATE TABLE A_PROMOCIONPAQUETEPRODUCTOS(idPromocion Number, precio Number, idProductoOfrecido1 Number, idProductoOfrecido2 Number),
-CONSTRAINT A_PROMOCIONPAQUETEPRODUCTOS_PK PRIMARY KEY(idProductoOfrecido1, idProductoOfrecido2);
+CREATE TABLE A_PROMOCIONPAQUETEPRODUCTOS(idPromocion Number, precio Number, idProductoOfrecido1 Number, idProductoOfrecido2 Number,
+CONSTRAINT A_PROMOCIONPAQUETEPRODUCTOS_PK PRIMARY KEY(idProductoOfrecido1, idProductoOfrecido2));
 
 ALTER TABLE A_PROMOCIONPAQUETEPRODUCTOS
 ADD CONSTRAINT A_PROMOCIONPAQUETEPRODUCTOS_FK_idPromocion
@@ -302,18 +302,18 @@ REFERENCES A_OFRECIDOSUCURSAL
 ENABLE;
 
 --Creación de tabla Facturas
-CREATE TABLE A_FACTURA(id Number, idUser Number, costoTotal Number),
-CONSTRAINT A_FACTURA_PK PRIMARY KEY (id);
+CREATE TABLE A_FACTURA(id Number, idUser Number, costoTotal Number,
+CONSTRAINT A_FACTURA_PK PRIMARY KEY (id));
 
 ALTER TABLE A_FACTURA
 ADD CONSTRAINT A_FACTURA_FK_idUser
 FOREIGN KEY (idUser)
-REFERENCES A_USER
+REFERENCES A_USUARIO
 ENABLE;
 
 --Creación de tabla ItemsFacturas
-CREATE TABLE A_ITEMFACTURA(idFactura Number, idProductoOfrecido Number, cantidad Number, costo Number),
-CONSTRAINT A_ITEMFACTURA_PK PRIMARY KEY (idFactura, idProductoOfrecido);
+CREATE TABLE A_ITEMFACTURA(idFactura Number, idProductoOfrecido Number, cantidad Number, costo Number,
+CONSTRAINT A_ITEMFACTURA_PK PRIMARY KEY (idFactura, idProductoOfrecido));
 
 ALTER TABLE A_ITEMFACTURA
 ADD CONSTRAINT A_ITEMFACTURA_FK_idFactura
