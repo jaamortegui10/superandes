@@ -5,7 +5,7 @@
 --Ejecútelo como un script con el botón correspondiente
 
 --Creación del secuenciador.
-CREATE secuence SuperAndes_sequence;
+CREATE sequence SuperAndes_sequence;
 --Creación de la tabla User y especificación de sus restricciones
 CREATE TABLE A_USER (id Number, password varchar(20), nombre varchar(40), correo varchar(30), tipo varchar(20)),
 CONSTRAINT A_USER_PK PRIMARY KEY (id);
