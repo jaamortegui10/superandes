@@ -15,7 +15,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import uniandes.isis2304.superAndes.negocio.Carrito;
 import uniandes.isis2304.superAndes.negocio.Categoria;
+import uniandes.isis2304.superAndes.negocio.Ciudad;
+import uniandes.isis2304.superAndes.negocio.Contenedor;
 
 public class PersistenciaSuperAndes {
 	/* ****************************************************************
@@ -397,10 +400,625 @@ public class PersistenciaSuperAndes {
 	 * Métodos consultas-adiciones sql.
 	 * *******************************************************/
 	
+	
+	public Carrito agregarCarrito( long idUser)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			long id = nextVal();
+			long tuplasInsertadas = sqlCarrito.agregarTupla(pm,  id,  idUser);
+			//Falta la implementación de los productosCarrito.
+			tx.commit();
+			
+			log.trace("Inserción de carrito: " + id + ": " + tuplasInsertadas + " tuplas insertadas.");
+			return new Carrito(id, idUser);
+			
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public Categoria agregarCategoria(String nombre, String caracteristicas, String almacenamiento, String manejo)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			long tuplasInsertadas = sqlCategoria.agregarTupla(pm, nombre, caracteristicas, almacenamiento, manejo);
+			tx.commit();
+			
+			log.trace("Inserción de categoria: " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+			
+			return new Categoria(nombre, caracteristicas, almacenamiento, manejo);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public Ciudad agregarCiudad(String nombre)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			//Falta implementación restricción nombre  no repetido.
+			long id = nextVal();
+			long tuplasInsertadas = sqlCiudad.agregarTupla(pm, id, nombre);
+			tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+			return new Ciudad(id, nombre);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public Contenedor agregarContenedor( long sucursalId, String tipo, int capacidad, int capacidadOcupada)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			long id = nextVal();
+			long tuplasInsertadas = sqlContenedor.agregarTupla(pm, id, sucursalId, tipo, capacidad, capacidadOcupada);
+			tx.commit();
+			
+			log.trace("Inserción de contenedor: " + id + ": " + tuplasInsertadas + "tuplas insertadas.");
+			return new Contenedor(id, sucursalId, tipo, capacidad, capapcidadOcupada);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+		
+	}
+	
+	public void agregarProveedor( int nit, long idUser, String dir, String tipoEmpresa )
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public void agregarClienteEmpresa( int nit, long idUser, String dir, int puntos, String tipoEmpresa)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public void agregarFactura(long id, long idUser, double costoTotal)
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+    public void agregarItemFactura(  long idFactura, long idProductoOfrecido, int cantidad, double costo)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarOfrecidoProveedor(  long idAbstracto, double precio, int nitProveedor)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarOfrecidoSucursal(  long idAbstracto, long idSucursal, double precio)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+		
+    }
+    
+    public void agregarPedido(  long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarClientePersona(  int cedula, long idUser, int puntos, String tipoPersona)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarTrabajadorSucursal(  int cedula, long idUser, long idSucursal, String tipoPersona)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarProductoAbstracto(  long id, String nombre, String tipo, String unidadMedida, String categoria)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarProductoFisico(  long id, long idOfrecido, int cantidadMedida, String codigoBarras, long idContenedor)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarProductoPedido(  long idPedido, long idProductoOfrecido, int cantidad)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarPromocion(  long id, long idSucursal, String descripcion, String tipo)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarPromocionPaqueteProductos(  long idPromocion, double precio, long idProductoOfrecido1, long idProductoOfrecido2)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void  agregarPromocionPorCantidadOUnidad(  long idOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarPromocionPorcentajeDescuento(  long idProductoOfrecido, long idPromocion, int porcentajeDescuento)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarProveedorSucursal(  long idSucursal, int nitProveedor)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarSucursal(  long id, String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public void agregarUser(  long id, String password, String nombre, String correo, String tipo)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+tx.commit();
+			
+			log.trace("Inserción de : " + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    
+	
 	public List<Categoria> darCategorias()
 	{
 		return sqlCategoria.darCategorias(pmf.getPersistenceManager());
 	}
+	
+	public void metodo(){
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	
 	
 	
 	/**

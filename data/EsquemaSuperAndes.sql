@@ -87,8 +87,14 @@ CHECK almacenamiento IN ('Nevera', 'Granos', 'Cereales');
 
 --Creación de la tabla A_CONTENEDOR
 
-CREATE TABLE A_CONTENEDOR(id Number, sucursalId Number, tipo varchar(20), capacidad Number, capacidadOcupada Number),
+CREATE TABLE A_CONTENEDOR(id Number, idSucursal Number, tipo varchar(20), capacidad Number, capacidadOcupada Number),
 CONSTRAINT A_CONTENEDOR_PK PRIMARY KEY (id);
+
+ALTER TABLE A_CONTENEDOR
+ADD CONSTRAINT A_CONTENEDOR_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES A_SUCURSAL
+ENABLE;
 
 ALTER TABLE A_CONTENEDOR
 ADD CONSTRAINT A_CONTENEDOR_tipo
