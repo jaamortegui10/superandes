@@ -19,6 +19,7 @@ DROP TABLE "PromocionPorcentajeDescuento" CASCADE CONSTRAINTS;
 DROP TABLE "PromocionPaqueteProductos" CASCADE CONSTRAINTS;
 DROP TABLE "Factura" CASCADE CONSTRAINTS;
 DROP TABLE "ItemFactura" CASCADE CONSTRAINTS;
+COMMIT;
 
 --Eliminar el contenido de todas las tablas.
 delete from ItemFactura;
@@ -41,3 +42,4 @@ delete from Ciudad;
 delete from Persona;
 delete from Empresa;
 delete from User;
+commit;
