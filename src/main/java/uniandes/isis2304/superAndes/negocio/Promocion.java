@@ -4,13 +4,11 @@ public class Promocion implements VOPromocion{
 	
 	private long id;
 	private long idSucursal;
-	private String slogan;
 	private String descripcion;
-	public Promocion(long id, long idSucursal, String slogan, String descripcion) {
+	public Promocion(long id, long idSucursal, String descripcion) {
 		super();
 		this.id = id;
 		this.idSucursal = idSucursal;
-		this.slogan = slogan;
 		this.descripcion = descripcion;
 	}
 	public long getId() {
@@ -24,12 +22,6 @@ public class Promocion implements VOPromocion{
 	}
 	public void setIdSucursal(long idSucursal) {
 		this.idSucursal = idSucursal;
-	}
-	public String getSlogan() {
-		return slogan;
-	}
-	public void setSlogan(String slogan) {
-		this.slogan = slogan;
 	}
 	public String getDescripcion() {
 		return descripcion;

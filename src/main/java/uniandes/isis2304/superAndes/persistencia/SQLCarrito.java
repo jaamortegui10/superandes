@@ -53,7 +53,7 @@ public class SQLCarrito {
 	 * @param idUser
 	 * @return
 	 */
-	public long agregarCarrito(PersistenceManager pm, long id, long idUser)
+	public long agregarTupla(PersistenceManager pm, long id, long idUser)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCarrito() +"(id, idUser) values (?, ?)");
 		q.setParameters(id, idUser);

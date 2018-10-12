@@ -40,7 +40,7 @@ public class SQLPedido {
 	 * @param fechaEntrega
 	 * @return
 	 */
-	public long agregarPedido(PersistenceManager pm, long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega)
+	public long agregarTupla(PersistenceManager pm, long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPedido() + "(id, idSucursal, NITProveedor, precio, estado, fechaEntrega) values (?, ?, ?, ?, ?, ?)"); 
 		q.setParameters(id, idSucursal, nitProveedor, precio, estado, fechaEntrega);

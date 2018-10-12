@@ -38,7 +38,7 @@ public class SQLOfrecidoProveedor {
 	 * @param nitProveedor
 	 * @return
 	 */
-	public long agregarOfrecidoProveedor(PersistenceManager pm, long idAbstracto, double precio, int nitProveedor)
+	public long agregarTupla(PersistenceManager pm, long idAbstracto, double precio, int nitProveedor)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaOfrecidoProveedor() + "(idAbstracto, precio, NITProveedor) values (?, ?, ?)");
 		q.setParameters(idAbstracto, precio, nitProveedor);

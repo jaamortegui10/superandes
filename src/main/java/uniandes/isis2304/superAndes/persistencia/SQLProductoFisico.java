@@ -30,13 +30,30 @@ public class SQLProductoFisico {
 		this.psa = psa;
 	}
 	
-	public long agregarProductoFisico(PersistenceManager pm, long id, long idOfrecido, int cantidadMedida, String codigoBarras, long idContenedor)
+	/**
+	 * Método para agregar tupla nueva
+	 * @param pm
+	 * @param id
+	 * @param idOfrecido
+	 * @param cantidadMedida
+	 * @param codigoBarras
+	 * @param idContenedor
+	 * @return
+	 */
+	public long agregarTupla(PersistenceManager pm, long id, long idOfrecido, int cantidadMedida, String codigoBarras, long idContenedor)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoFisico() + "(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor) values (?, ?, ?, ?, ?)");
 		q.setParameters(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor);
 		return (long) q.executeUnique();
 	}
 	
+	/**
+	 * Método para cambiar el idContenedor de una tupla.
+	 * @param pm
+	 * @param id
+	 * @param idContenedor
+	 * @return
+	 */
 	public long cambiarIdContenedor(PersistenceManager pm, long id, long idContenedor)
 	{
 		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = ? WHERE id = ?");
@@ -44,6 +61,13 @@ public class SQLProductoFisico {
 		return (long) q.executeUnique();
 	}
 	
+	/**
+	 * Método para transformar en una tupla su idContenedor = null y el idCarrito al dado por parámetro.
+	 * @param pm
+	 * @param id
+	 * @param idCarrito
+	 * @return
+	 */
 	public long cambiardeIdContenedorAIdCarrito(PersistenceManager pm, long id, long idCarrito)
 	{
 		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = null, idCarrito = ? WHERE id = ?");
@@ -51,6 +75,12 @@ public class SQLProductoFisico {
 		return (long) q.executeUnique();
 	}
 	
+	/**
+	 * Retorna todas las tuplas con el idContenedor dado por parámetro.
+	 * @param pm
+	 * @param idContenedor
+	 * @return
+	 */
 	public List<ProductoFisico> darProductosFisicosPorIdContenedor(PersistenceManager pm, long idContenedor)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE idContenedor = ?");
@@ -58,4 +88,13 @@ public class SQLProductoFisico {
 		q.setParameters(idContenedor);
 		return (List<ProductoFisico>) q.executeUnique();
 	}
+	
+	public ProductoFisico darProductoFisicoPorId(PersistenceManager pm, long id)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE id = ?");
+		q.setResultClass(ProductoFisico.class);
+		q.setParameters(id);
+		return (ProductoFisico) q.executeUnique();
+	}
+	
 }

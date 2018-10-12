@@ -38,7 +38,7 @@ public class SQLFactura {
 	 * @param costoTotal
 	 * @return
 	 */
-	public long agregarFactura(PersistenceManager pm, long id, long idUser, double costoTotal)
+	public long agregarTupla(PersistenceManager pm, long id, long idUser, double costoTotal)
 	{
 		
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaFactura() + "(id, idUser, costoTotal) values (?, ?, ?)");

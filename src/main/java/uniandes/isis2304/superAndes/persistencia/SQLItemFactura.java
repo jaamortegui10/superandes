@@ -30,7 +30,7 @@ public class SQLItemFactura {
 		this.psa = psa;
 	}
 	
-	public long agregarItemFactura(PersistenceManager pm, long idFactura, long idProductoOfrecido, int cantidad, double costo)
+	public long agregarTupla(PersistenceManager pm, long idFactura, long idProductoOfrecido, int cantidad, double costo)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaItemFactura() + "(idFactura, idProductoOfrecido, cantidad, costo) values (?, ?, ?, ?)");
 		q.setParameters(idFactura, idProductoOfrecido, cantidad, costo);

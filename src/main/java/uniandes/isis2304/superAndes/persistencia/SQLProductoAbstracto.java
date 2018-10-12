@@ -40,7 +40,7 @@ public class SQLProductoAbstracto {
 	 * @param categoria
 	 * @return
 	 */
-	public long agregarProductoAbstracto(PersistenceManager pm, long id, String nombre, String tipo, String unidadMedida, String categoria)
+	public long agregarTupla(PersistenceManager pm, long id, String nombre, String tipo, String unidadMedida, String categoria)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoAbstracto() + "(id, nombre, tipo, unidadMedida, categoria) values (?, ?, ?, ?, ?)");
 		q.setParameters(id, nombre, tipo, unidadMedida, categoria);

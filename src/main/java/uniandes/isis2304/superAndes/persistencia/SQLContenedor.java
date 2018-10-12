@@ -41,7 +41,7 @@ public class SQLContenedor {
 	 * @param capacidadOcupada
 	 * @return
 	 */
-	public long agregarContenedor(PersistenceManager pm, long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada)
+	public long agregarTupla(PersistenceManager pm, long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaContenedor() + "(id, sucursalId, tipo, capacidad, capacidadOcupada) values (?, ?, ?, ?, ?)");
 		q.setParameters(id, sucursalId, tipo, capacidad, capacidadOcupada);

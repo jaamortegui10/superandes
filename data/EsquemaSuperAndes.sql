@@ -7,7 +7,7 @@
 --Creación del secuenciador.
 CREATE secuence SuperAndes_sequence;
 --Creación de la tabla User y especificación de sus restricciones
-CREATE TABLE A_USER (id Number PRIMARY KEY, login varchar(20), password varchar(20), nombre varchar(40), correo varchar(30), tipo varchar(20)),
+CREATE TABLE A_USER (id Number, password varchar(20), nombre varchar(40), correo varchar(30), tipo varchar(20)),
 CONSTRAINT A_USER_PK PRIMARY KEY (id);
 
 ALTER TABLE A_USER
@@ -227,7 +227,7 @@ REFERENCES A_OFRECIDOPROVEEDOR
 ENABLE;
 
 --Creación de tabla Promociones
-CREATE TABLE A_PROMOCION(id Number, idSucursal Number, slogan varchar(40), descripcion varchar(130), tipo varchar(20)),
+CREATE TABLE A_PROMOCION(id Number, idSucursal Number, descripcion varchar(130), tipo varchar(20)),
 CONSTRAINT A_PROMOCION_PK PRIMARY KEY (id);
 
 ALTER TABLE A_PROMOCION

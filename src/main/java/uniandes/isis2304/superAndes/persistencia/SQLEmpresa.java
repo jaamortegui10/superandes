@@ -39,7 +39,7 @@ public class SQLEmpresa {
 	 * @param tipoEmpresa
 	 * @return
 	 */
-	public long agregarEmpresaProveedor(PersistenceManager pm, int nit, long idUser, String dir, String tipoEmpresa )
+	public long agregarProveedor(PersistenceManager pm, int nit, long idUser, String dir, String tipoEmpresa )
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, tipoEmpresa) values (?, ?, ?, ?)");
 		q.setParameters(nit, idUser, dir, tipoEmpresa);
@@ -56,7 +56,7 @@ public class SQLEmpresa {
 	 * @param tipoEmpresa
 	 * @return
 	 */
-	public long agregarEmpresaCliente(PersistenceManager pm, int nit, long idUser, String dir, int puntos, String tipoEmpresa)
+	public long agregarCliente(PersistenceManager pm, int nit, long idUser, String dir, int puntos, String tipoEmpresa)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, puntos, tipoEmpresa) values (?, ?, ?, ?, ?)");
 		q.setParameters(nit, idUser, dir, puntos, tipoEmpresa);

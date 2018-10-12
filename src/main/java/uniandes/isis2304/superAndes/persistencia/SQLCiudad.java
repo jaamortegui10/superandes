@@ -34,7 +34,7 @@ public class SQLCiudad {
 	 * @param nombre
 	 * @return
 	 */
-	public long agregarCiudad(PersistenceManager pm, long id, String nombre)
+	public long agregarTupla(PersistenceManager pm, long id, String nombre)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCiudad() + "(id, nombre) values (?, ?)");
 		q.setParameters(id, nombre);
