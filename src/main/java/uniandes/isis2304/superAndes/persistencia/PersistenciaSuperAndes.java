@@ -416,7 +416,7 @@ public class PersistenciaSuperAndes {
 	/* *******************************************************
 	 * Métodos consultas-adiciones sql.
 	 * *******************************************************/
-	
+
 	
 	public Carrito agregarCarrito( long idUser)
 	{
@@ -533,17 +533,43 @@ public class PersistenciaSuperAndes {
 		
 	}
 	
-	public Empresa agregarEmpresa( int nit, long idUser, String direccion, int puntosCompras, String tipoEmpresa )
+	public Empresa agregarProveedor( int nit, long idUser, String direccion, String tipoEmpresa )
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		try
 		{
 			tx.begin();
-			double tuplasInsertadas;
-			if(tipoEmpresa.equals(Empresa.PROVEEDOR))
+				double tuplasInsertadas;
 				tuplasInsertadas = sqlEmpresa.agregarProveedor(pm, nit, idUser, direccion, tipoEmpresa);
-			else
+			
+			tx.commit();
+			
+			log.trace("Inserción de Empresa: " + nit + "," + tipoEmpresa +  ": " + tuplasInsertadas + "tuplas insertadas.");
+			return new Empresa(nit, idUser, direccion, -1, tipoEmpresa);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public Empresa agregarEmpresaCliente( int nit, long idUser, String direccion, int puntosCompras, String tipoEmpresa )
+	{
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+				double tuplasInsertadas;
 				tuplasInsertadas = sqlEmpresa.agregarCliente(pm, nit, idUser, direccion, puntosCompras, tipoEmpresa);
 			tx.commit();
 			
@@ -647,7 +673,7 @@ public class PersistenciaSuperAndes {
 		}
     }
     
-    public OfrecidoSucursal agregarOfrecidoSucursal(long id,  long idAbstracto, long idSucursal, double precio)
+    public OfrecidoSucursal agregarOfrecidoSucursal( long idAbstracto, long idSucursal, double precio)
     {
     	PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -703,22 +729,48 @@ public class PersistenciaSuperAndes {
 		}
     }
     
-    public Persona agregarPersona(  int cedula, long idUser,  int puntos, long idSucursal, String tipoPersona)
+    //¿La comparación de los if va en la lógica?
+    public Persona agregarPersonaCliente(  int cedula, long idUser,  int puntos,String tipoPersona)
     {
     	PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		try
 		{
 			tx.begin();
-			long tuplasInsertadas;
-			if(tipoPersona.equals(Persona.TIPO_CLIENTE))
+				long tuplasInsertadas;
 				tuplasInsertadas = sqlPersona.agregarCliente(pm, cedula, idUser, puntos, tipoPersona);
-			else
+			tx.commit();
+			
+			log.trace("Inserción de Persona: " + cedula + ","+ tipoPersona + ": " + tuplasInsertadas + "tuplas insertadas.");
+			return new Persona(cedula, idUser,  puntos, -1, tipoPersona);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+    }
+    
+    public Persona agregarTrabajadorSucursal(  int cedula, long idUser, long idSucursal, String tipoPersona)
+    {
+    	PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+				long tuplasInsertadas;
 				tuplasInsertadas = sqlPersona.agregarTrabajadorSucursal(pm, cedula, idUser, idSucursal, tipoPersona);
 			tx.commit();
 			
 			log.trace("Inserción de Persona: " + cedula + ","+ tipoPersona + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new Persona(cedula, idUser,  puntos, idSucursal, tipoPersona);
+			return new Persona(cedula, idUser, -1, idSucursal, tipoPersona);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
