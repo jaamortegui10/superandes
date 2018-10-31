@@ -1,0 +1,258 @@
+{
+"title":"Aplicación Transaccional de Super Andes Uniandes",
+"frameH":600,
+"frameW":800,
+"bannerPath":"./src/main/resources/config/logo.png",
+"menuBar":
+[
+	{	"menuTitle":"Usuario",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarUsuario"
+			},
+			{
+				"label":"Listar Clientes Persona",
+				"event":"listarClientePersona"
+			},
+			{
+				"label":"Listar Trabajadores Sucursal",
+				"event":"listarTrabajadorSucursal"
+			},
+			{
+				"label":"Listar Clientes Empresa",
+				"event":"listarClienteEmpresa"
+			},
+			{
+				"label":"Listar Proveedores",
+				"event":"listarProveedor"
+			}
+		]
+		
+	},
+	{
+		"menuTite":"Lugar",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarLugar"
+			},
+			{
+				"label":"Listar",
+				"event":"listarLugar"
+			}
+		]
+	},
+	{
+		"menuTitle":"sucursal",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarSucursal"
+			},
+			{
+				"label":"listar",
+				"event":"listarSucursal"
+			}
+		]
+	},
+	{
+		"menuTitle":"Categoria",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarCategoria"
+			},
+			{
+				"label":"listar",
+				"event":"listarCategoria"
+			}
+		]
+	},
+	{
+		"menuTitle":"Contenedor",
+		"options":
+		[
+			{
+				"label":"Adicionar por Sucursal Id",
+				"event":"adicionarContenedorPorSucursalId"
+			},
+			{
+				"label":"Listar por Sucursal Id",
+				"event":"listarContenedorPorSucursalId"
+			}
+			
+		]
+	},
+	{
+		"menuTitle":"Producto",
+		"options":
+		[
+			{
+				"label":"Adicionar Abstracto",
+				"event":"adicionarProductoAbstracto"
+			},
+			{
+				"label":"Adicionar Ofredico Sucursal",
+				"event":"adicionarProductoOfrecidoSucursal"
+			},
+			{
+				"label":"Adicionar Ofrecido Proveedor",
+				"event":"adicionarProductoOfrecidoProveedor"
+			},
+			{
+				"label":"Adicionar Fisico",
+				"event":"adicionarProductoFisico"
+			},
+			{
+				"label":"Listar Ofrecido Por Proveedor",
+				"event":"listarProductoOfrecidoPorProveedor"
+			},
+			{
+				"label":"Listar Ofrecido Por Sucursal",
+				"event":"listarProductoOfrecidoPorSucursal"
+			},
+			{
+				"label":"Listar Fisico Por Sucursal",
+				"event":"listarProductoFisicoPorSucursal"
+			},
+			{
+				"label":"Listar Fisico Por Contenedor",
+				"event":"listarProductoFisicoPorContenedor"
+			}
+		]
+	},
+	{
+		"menuTitle":"Pedido",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarPedido"
+			},
+			{
+				"label":"Listar",
+				"event":"listarPedido"
+			}
+		]
+	},
+	{
+		"menuTitle":"Promocion",
+		"options":
+		[
+			{
+				"label":"Adicionar Por Cantidad O Unidad",
+				"event":"adicionarPromPorCantidadOUnidad"
+			},
+			{
+				"label":"Adicionar Porcentaje Descuento",
+				"event":"adicionarPromPorcentajeDescuento"
+			},
+			{
+				"label":"Adicionar Paquete Productos",
+				"event":"adicionarPromPaqueteProductos"
+			},
+			{
+				"label":"Listar",
+				"event":"listarPromocion"
+			},
+			{
+				"label":"Listar Por Cantidad O Unidad",
+				"event":"listarPromPorCantidadOUnidad"
+			},
+			{
+				"label":"Listar Porcentaje Descuento",
+				"event":"listarPromPorcentajeDescuento"
+			},
+			{
+				"label":"Listar Paquete Productos",
+				"event":"listarPromPaqueteProductos"
+			}
+		]
+	},
+	{
+		"menuTitle":"carrito",
+		"options":
+		[
+			{
+				"label":"Adicionar",
+				"event":"adicionarCarrito"
+			},
+			{
+				"label":"Listar",
+				"event":"listarCarrito"
+			}
+		]
+	},
+	{
+		"menuTitle":"mantenimiento",
+		"options":
+		[
+			{
+					"label": "Mostrar log Parranderos",
+					"event": "mostrarLogParranderos"
+				},
+				{
+					"label": "Mostrar log datanucleus",
+					"event": "mostrarLogDatanuecleus"
+				},
+				{
+					"label": "Limpiar log de parranderos",
+					"event": "limpiarLogParranderos"
+				},
+				{
+					"label": "Limpiar log de datanucleus",
+					"event": "limpiarLogDatanucleus"
+				},
+				{
+					"label": "Limpiar Base de Datos",
+					"event": "limpiarBD"
+				}
+		]
+	},
+	{
+		"menuTitle": "Documentación",
+		  "options":
+			[
+				{
+					"label": "PresentaciÃ³n general",
+					"event": "mostrarPresentacionGeneral"
+				},
+				{
+					"label": "Modelo conceptual",
+					"event": "mostrarModeloConceptual"
+				},
+				{
+					"label": "Esquema de la BD",
+					"event": "mostrarEsquemaBD"
+				},
+				{
+					"label": "Script creaciÃ³n de la BD",
+					"event": "mostrarScriptBD"
+				},
+				{
+					"label": "Arquitectura de referencia",
+					"event": "mostrarArqRef"
+				},
+				{
+					"label": "Javadoc Parranderos",
+					"event": "mostrarJavadoc"
+				}
+			]
+	},
+	{
+		"menuTitle": "Acerca de ...",
+		  "options":
+			[
+				{
+					"label": "Acerca de ...",
+					"event": "acercaDe"
+				}
+			]
+	}
+]
+}

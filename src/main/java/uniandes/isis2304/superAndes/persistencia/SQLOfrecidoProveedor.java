@@ -38,10 +38,10 @@ public class SQLOfrecidoProveedor {
 	 * @param nitProveedor
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long idAbstracto, double precio, int nitProveedor)
+	public long agregarTupla(PersistenceManager pm, long id, long idAbstracto, double precio, int nitProveedor)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaOfrecidoProveedor() + "(idAbstracto, precio, NITProveedor) values (?, ?, ?)");
-		q.setParameters(idAbstracto, precio, nitProveedor);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaOfrecidoProveedor() + "(id, idAbstracto, precio, NITProveedor) values (?, ?, ?, ?)");
+		q.setParameters(id, idAbstracto, precio, nitProveedor);
 		return (long) q.executeUnique();
 	}
 	

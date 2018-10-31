@@ -44,7 +44,7 @@ insert into CIUDAD (id, nombre) values (40, 'Del Mar');
 
 --Población de tabla Categoria
 
-insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('congelados');
+insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('congelados', );
 insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('quesos');
 insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('dulces');
 insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('aseo');

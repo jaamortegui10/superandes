@@ -165,7 +165,7 @@ public class PersistenciaSuperAndes {
 		//Define los nombres por defecto de las tablas de la base de datos.
 		tablas = new LinkedList<String>();
 		tablas.add("superandes_sequence");
-		tablas.add("USER");
+		tablas.add("USUARIO");
 		tablas.add("PERSONA");
 		tablas.add("EMPRESA");
 		tablas.add("CIUDAD");
@@ -180,9 +180,9 @@ public class PersistenciaSuperAndes {
 		tablas.add("PEDIDO");
 		tablas.add("PRODUCTOPEDIDO");
 		tablas.add("PROMOCION");
-		tablas.add("PROMOCIONPORCANTIDADOUNIDAD");
-		tablas.add("PROMOCIONPORCENTAJEDESCUENTO");
-		tablas.add("PROMOCIONPAQUETEPRODUCTOS");
+		tablas.add("PROMPORCANTIDADOUNIDAD");
+		tablas.add("PROMPORCENTAJEDESCUENTO");
+		tablas.add("PROMPAQUETEPRODUCTOS");
 		tablas.add("FACTURA");
 		tablas.add("ITEMFACTURA");
 		tablas.add("CARRITO");
@@ -653,11 +653,12 @@ public class PersistenciaSuperAndes {
 		try
 		{
 			tx.begin();
-			long tuplasInsertadas = sqlOfrecidoProveedor.agregarTupla(pm, idAbstracto, precio, nitProveedor);
+			long id = nextVal();
+			long tuplasInsertadas = sqlOfrecidoProveedor.agregarTupla(pm, id, idAbstracto, precio, nitProveedor);
 			tx.commit();
 			
 			log.trace("Inserción de ofrecidoProveedor: " + idAbstracto + "," + nitProveedor + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new OfrecidoProveedor(idAbstracto, precio, nitProveedor);
+			return new OfrecidoProveedor(id, idAbstracto, precio, nitProveedor);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
@@ -680,12 +681,13 @@ public class PersistenciaSuperAndes {
 		try
 		{
 			tx.begin();
-			long tuplasInsertadas = sqlOfrecidoSucursal.agregarTupla(pm, idAbstracto, idSucursal, precio);
+			long id = nextVal();
+			long tuplasInsertadas = sqlOfrecidoSucursal.agregarTupla(pm, id, idAbstracto, idSucursal, precio);
 			
 			tx.commit();
 			
 			log.trace("Inserción de OfrecidoSucursal: " + idAbstracto + ","+ idSucursal + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new OfrecidoSucursal(idAbstracto, idSucursal, precio);
+			return new OfrecidoSucursal(id, idAbstracto, idSucursal, precio);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
