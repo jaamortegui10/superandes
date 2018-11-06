@@ -70,13 +70,13 @@ public class SQLProductoFisico {
 	 */
 	public long cambiardeIdContenedorAIdCarrito(PersistenceManager pm, long id, long idCarrito)
 	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = null, idCarrito = ? WHERE id = ?");
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " set idContenedor = null, idCarrito = ? WHERE id = ?");
 		q.setParameters(idCarrito, id);
 		return (long) q.executeUnique();
 	}
 	public long cambiardeIdCarritoAIdContenedor(PersistenceManager pm, long id, long idContenedor)
 	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = ?, idCarrito = -1 WHERE id = ?");
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " set idContenedor = ?, idCarrito = -1 WHERE id = ?");
 		q.setParameters(idContenedor, id);
 		return (long) q.executeUnique();
 	}
@@ -96,6 +96,7 @@ public class SQLProductoFisico {
 	
 	public ProductoFisico darProductoFisicoPorId(PersistenceManager pm, long id)
 	{
+		System.out.println("En dar producto físico: id: " + id);
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE id = ?");
 		q.setResultClass(ProductoFisico.class);
 		q.setParameters(id);
@@ -117,6 +118,26 @@ public class SQLProductoFisico {
 		q.setResultClass(ProductoFisico.class);
 		q.setParameters(carritoId, productoFisicoId);
 		return (long) q.executeUnique();
+	}
+	
+	public List<ProductoFisico> darProductosDeCarritosAbandonadosPorSucursalId(PersistenceManager pm, long idSucursal)
+	{
+		String sql = "select p.*"
+				+" From Carrito c Inner Join ProductoFisico p"
+				+" On c.id = p.idCarrito"
+				+" Inner Join OfrecidoSucursal o"
+				+" On p.idOfrecido = o.id"
+				+" Inner Join Sucursal s"
+				+" On o.idSucursal = s.id"
+				+" Inner Join ProductoAbstracto a"
+				+" On  o.idAbstracto = a.id"
+				+" Where c.idUser = 2001 And s.id= ?"
+				+" order by a.tipo;";
+		Query q = pm.newQuery(SQL, sql);
+		q.setResultClass(ProductoFisico.class);
+		q.setParameters(idSucursal);
+		return (List<ProductoFisico>) q.executeList();
+		
 	}
 	
 	public List<ProductoFisico> darProductosDeCarritosDevueltos(PersistenceManager pm)

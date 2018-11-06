@@ -8,7 +8,7 @@ public class Persona implements VOPersona{
 	private int cedula;
 	private long idUser;
 	private int puntos;
-	private long sucursalId;
+	private long idSucursal;
 	private String tipoPersona;
 	
 	public Persona()
@@ -16,12 +16,12 @@ public class Persona implements VOPersona{
 		
 	}
 
-	public Persona(int cedula, long idUser, int puntos, long sucursalId, String tipoPersona) {
+	public Persona(int cedula, long idUser, int puntos, long idSucursal, String tipoPersona) {
 		super();
 		this.cedula = cedula;
 		this.idUser = idUser;
 		this.puntos = puntos;
-		this.sucursalId = sucursalId;
+		this.idSucursal = idSucursal;
 		this.tipoPersona = tipoPersona;
 	}
 
@@ -48,13 +48,13 @@ public class Persona implements VOPersona{
 	public void setPuntos(int puntos) {
 		this.puntos = puntos;
 	}
-
-	public long getSucursalId() {
-		return sucursalId;
+	
+	public long getIdSucursal() {
+		return idSucursal;
 	}
 
-	public void setSucursalId(long sucursalId) {
-		this.sucursalId = sucursalId;
+	public void setIdSucursal(long idSucursal) {
+		this.idSucursal = idSucursal;
 	}
 
 	public String getTipoPersona() {

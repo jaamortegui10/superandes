@@ -1204,7 +1204,7 @@ public class PersistenciaSuperAndes {
 			
 			ProductoAbstracto productoAbstracto = sqlProductoAbstracto.darProductoPorIdProductoFisico(pmf.getPersistenceManager(), productoFisicoId);
 			long sucursalId = sqlOfrecidoSucursal.darOfrecidoPorIdFisico(pmf.getPersistenceManager(), productoFisicoId).getIdSucursal();
-			ProductoFisico productoFisico = sqlProductoFisico.darProductoFisicoPorId(pmf.getPersistenceManager(), usuarioId);
+			ProductoFisico productoFisico = sqlProductoFisico.darProductoFisicoPorId(pmf.getPersistenceManager(), productoFisicoId);
 			List<Contenedor> contenedores = sqlContenedor.darContenedoresPorSucursalIdYTipoProducto(pmf.getPersistenceManager(), sucursalId, productoAbstracto.getTipo());
 			int ocupacionProducto = productoFisico.getCantidadMedida();
 			long idContenedor = -1;
@@ -1239,6 +1239,65 @@ public class PersistenciaSuperAndes {
 		}
 	}
 	
+	private long agregarProductoAContenedor(ProductoFisico producto, List<Contenedor> contenedores)
+	{
+		int ocupacionProducto = producto.getCantidadMedida();
+		long idContenedor = -1;
+		for(Contenedor contenedorActual: contenedores)
+		{
+			if(contenedorActual.getCapacidadOcupada() + ocupacionProducto <= contenedorActual.getCapacidad())
+			{
+				cambiarCapacidadContenedor(contenedorActual.getId(), producto, true);
+				idContenedor = contenedorActual.getId();
+				break;
+			}
+				
+		}
+		if(idContenedor == -1)
+			return -1;
+		return sqlProductoFisico.cambiardeIdCarritoAIdContenedor(pmf.getPersistenceManager(), producto.getId(), idContenedor);
+	}
+	
+	public long ordenarCarritos(long idSucursal)
+	{
+		long resultadoQuery = -1;
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			List<ProductoFisico> productosDeCarritosAbandonados = sqlProductoFisico.darProductosDeCarritosAbandonadosPorSucursalId(pmf.getPersistenceManager(), idSucursal);
+			ProductoAbstracto abstractoActual = null;
+			List<Contenedor> contenedores = new LinkedList<Contenedor>();
+			String tipoActual = "";
+			for(ProductoFisico productoFisicoActual: productosDeCarritosAbandonados)
+			{
+				
+				abstractoActual =  sqlProductoAbstracto.darProductoPorIdProductoFisico(pmf.getPersistenceManager(), productoFisicoActual.getId());
+				if(!tipoActual.equals(abstractoActual.getTipo()))
+				{
+					long sucursalIdActual = sqlOfrecidoSucursal.darOfrecidoPorIdFisico(pmf.getPersistenceManager(), productoFisicoActual.getId()).getIdSucursal();
+					tipoActual = abstractoActual.getTipo();
+					contenedores = sqlContenedor.darContenedoresPorSucursalIdYTipoProducto(pmf.getPersistenceManager(), sucursalIdActual, abstractoActual.getTipo());
+				}
+				resultadoQuery += agregarProductoAContenedor(productoFisicoActual, contenedores);		
+			}
+				
+			tx.commit();
+			return resultadoQuery;
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+			return -1;
+			
+		}
+	}
+	
 	public long devolverCarrito(long usuarioId)
 	{
 		long resultadoQuery = -1;
@@ -1247,7 +1306,8 @@ public class PersistenciaSuperAndes {
 		try
 		{
 			tx.begin();
-			resultadoQuery = sqlCarrito.cambiarIdUserANull(pmf.getPersistenceManager());
+			long idCarrito = sqlCarrito.darCarritoPorUsuarioId(pmf.getPersistenceManager(), usuarioId).getId();
+			resultadoQuery = sqlCarrito.cambiarIdUserANull(pmf.getPersistenceManager(), idCarrito);
 			tx.commit();
 			return resultadoQuery;
 		}catch(Exception e)

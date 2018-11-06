@@ -289,7 +289,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	{
 		try
 		{
-			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("trabajador_sucursal");
+			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("empleado_sucursal");
 			String resultado = "En listar Trabajador Sucursal";
 			resultado += "\n" + listarTrabajadoresSucursales(lista);
 			panelDatos.actualizarPanel(resultado);
@@ -408,6 +408,20 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 			String resultado = generarMensajeError(e);
 			panelDatos.actualizarPanel(resultado);
 		}
+	}
+	
+	public void ordenarProductosCarrosAbandonados()
+	{
+		try
+		{
+			long idTrabajador = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id del trabajador de la sucursal."));
+			long idSucursal = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de la sucursal."));
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+		
 	}
 	
 	public void listarSucursal()
@@ -967,7 +981,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     		respuesta += "\n***********************"
     				+ "\n cedula: " + trabajadorActual.getCedula()
     				+ "\n idUser: " + trabajadorActual.getIdUser()
-    				+ "\n sucursalId: " + trabajadorActual.getSucursalId()
+    				+ "\n sucursalId: " + trabajadorActual.getIdSucursal()
     				+ "\n tipoPersona: " + trabajadorActual.getTipoPersona();
     	}
     	return respuesta;

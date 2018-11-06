@@ -71,6 +71,7 @@ public class SQLPersona {
 	public List<Persona> darPersonasPorTipoPersona(PersistenceManager pm, String tipoPersona)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaPersona() + " WHERE tipoPersona = ?");
+		q.setResultClass(Persona.class);
 		q.setParameters(tipoPersona);
 		return (List<Persona>) q.executeList();
 	}

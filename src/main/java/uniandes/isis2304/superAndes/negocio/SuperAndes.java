@@ -381,7 +381,7 @@ public class SuperAndes {
 	{
 		log.info ("Generando los VO de las personas de un tipo dado.");        
         List<VOPersona> voPersonas = new LinkedList<VOPersona> ();
-        for (Persona p : psa.darPersonasPorTipoPersona(tipo) )
+        for (VOPersona p : psa.darPersonasPorTipoPersona(tipo) )
         {
         	voPersonas.add (p);
         }
@@ -482,14 +482,7 @@ public class SuperAndes {
 		return voContenedores;
 	}
 	
-	//Falta implementar método en persistencia.
-	public List<Contenedor> darContenedoresPorIdSucursalYTipo()
-	{
-		log.info ("Generando los VO de las contenedores de una sucursal dada y tipo dado.");
-		List<VOContenedor> voContenedores = new LinkedList<VOContenedor>();
-		log.info ("Generando los VO de las contenedores de una sucursal dada y tipo dado.");
-		return null;
-	}
+	
 	
 	
 	

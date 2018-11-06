@@ -56,6 +56,10 @@
 			{
 				"label":"listar",
 				"event":"listarSucursal"
+			},
+			{
+				"label":"Ordenar Productos Carros Abandonados",
+				"event":"ordenarProductosCarrosAbandonados"
 			}
 		]
 	},

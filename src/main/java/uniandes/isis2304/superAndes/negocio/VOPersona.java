@@ -4,6 +4,6 @@ public interface VOPersona {
 	public int getCedula();
 	public long getIdUser();
 	public int getPuntos();
-	public long getSucursalId();
+	public long getIdSucursal();
 	public String getTipoPersona();
 }

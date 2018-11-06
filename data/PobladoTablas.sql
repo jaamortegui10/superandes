@@ -73,5 +73,15 @@ insert into Contenedor(id, idSucursal, tipo, capacidad, caacidadOcupada) values 
 
 insert into ProductoAnullbstracto(id, nombre, tipo, unidadmedida, categoria) values ();
 
+insert into Sucursal(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad) values (2001, 'Farayones', 400, 'cra 20 # 90', 60, 60, 22);
+insert into contenedor(id, idSucursal, tipo, capacidad, capacidadOcupada, tipoProducto) values (2004, 2001, 'bodega', 40000, 0, 'Cereales');
+insert into contenedor(id, idSucursal, tipo, capacidad, capacidadOcupada, tipoProducto) values (2005, 2001, 'estante', 20000, 0, 'Cereañes');
+insert into OfrecidoSucursal(id, idAbstracto, idSucursal, precio) values (20002, 2000, 2001, 3000);
+insert into OfrecidoSucursal(id, idAbstracto, idSucursal, precio) values (20003, 2001, 2001, 4000);
 
+insert into ProductoFisico(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor, idCarrito) values (20010, 20002, 200, '4e2a', 2004, -1);
+insert into ProductoFisico(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor, idCarrito) values (20011, 20002, 200, '4e2b', 2004, -1);
+insert into ProductoFisico(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor, idCarrito) values (20012, 20002, 200, '4e2c', 2004, -1);
+insert into ProductoFisico(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor, idCarrito) values (20013, 20003, 200, '4e2d', 2004, -1);
+insert into ProductoFisico(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor, idCarrito) values (20014, 20003, 200, '4e2e', 2004, -1);
 

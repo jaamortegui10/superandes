@@ -70,6 +70,13 @@ public class SQLCarrito {
 		return (long) q.executeUnique();
 	}
 	
+	public List<Carrito> darCarritosAbandonados(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaCarrito() +" WHERE idUser = null");
+		q.setResultClass(Carrito.class);
+		return (List<Carrito>) q.executeList();
+	}
+	
 	/**
 	 * Método que elimina una tupla con el id dado por parámetro de la relación Carrito.
 	 * @param pm
@@ -83,9 +90,10 @@ public class SQLCarrito {
 		return (long) q.executeUnique();
 	}
 	
-	public long cambiarIdUserANull(PersistenceManager pm)
+	public long cambiarIdUserANull(PersistenceManager pm, long idCarrito)
 	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaCarrito() + " SET idUser = null");
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaCarrito() + " SET idUser = null WHERE id = ?");
+		q.setParameters(idCarrito);
 		return (long) q.executeUnique();
 	
 	}
