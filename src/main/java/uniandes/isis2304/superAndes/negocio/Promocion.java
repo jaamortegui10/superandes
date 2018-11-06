@@ -6,6 +6,10 @@ public class Promocion implements VOPromocion{
 	private long idSucursal;
 	private String descripcion;
 	private String tipo;
+	public Promocion()
+	{
+		
+	}
 	public Promocion(long id, long idSucursal, String descripcion, String tipo) {
 		super();
 		this.id = id;

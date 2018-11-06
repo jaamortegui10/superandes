@@ -74,7 +74,12 @@ public class SQLProductoFisico {
 		q.setParameters(idCarrito, id);
 		return (long) q.executeUnique();
 	}
-	
+	public long cambiardeIdCarritoAIdContenedor(PersistenceManager pm, long id, long idContenedor)
+	{
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = ?, idCarrito = -1 WHERE id = ?");
+		q.setParameters(idContenedor, id);
+		return (long) q.executeUnique();
+	}
 	/**
 	 * Retorna todas las tuplas con el idContenedor dado por parámetro.
 	 * @param pm
@@ -86,7 +91,7 @@ public class SQLProductoFisico {
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE idContenedor = ?");
 		q.setResultClass(ProductoFisico.class);
 		q.setParameters(idContenedor);
-		return (List<ProductoFisico>) q.executeUnique();
+		return (List<ProductoFisico>) q.executeList();
 	}
 	
 	public ProductoFisico darProductoFisicoPorId(PersistenceManager pm, long id)
@@ -97,4 +102,31 @@ public class SQLProductoFisico {
 		return (ProductoFisico) q.executeUnique();
 	}
 	
+	
+	public List<ProductoFisico> darProductosPorCarritoId(PersistenceManager pm, long carritoId)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE idCarrito = ?");
+		q.setResultClass(ProductoFisico.class);
+		q.setParameters(carritoId);
+		return (List<ProductoFisico>) q.executeList();
+	}
+	
+	public long cambiarProductoACarrito(PersistenceManager pm, long productoFisicoId, long carritoId)
+	{
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " SET idCarrito = ?, idContenedor = -1 WHERE id = ?");
+		q.setResultClass(ProductoFisico.class);
+		q.setParameters(carritoId, productoFisicoId);
+		return (long) q.executeUnique();
+	}
+	
+	public List<ProductoFisico> darProductosDeCarritosDevueltos(PersistenceManager pm)
+	{
+		String sql = "Select pf.*" 
+				+" From " + psa.darTablaProductoFisico() +" pf Inner Join Carrito c"
+				+" On pf.idCarrito = c.id"
+				+" Where c.idUser = null";
+		Query q = pm.newQuery(SQL, sql);
+		q.setResultClass(ProductoFisico.class);
+		return (List<ProductoFisico>) q.executeList();
+	}
 }

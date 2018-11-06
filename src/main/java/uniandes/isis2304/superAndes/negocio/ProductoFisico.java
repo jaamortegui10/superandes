@@ -14,7 +14,6 @@ public class ProductoFisico implements VOProductoFisico{
 	private long idCarrito;
 	
 	public ProductoFisico() {
-		super();
 		// TODO Auto-generated constructor stub
 	}
 	

@@ -3,10 +3,11 @@ package uniandes.isis2304.superAndes.negocio;
 public class Contenedor implements VOContenedor{
 	
 	private long id;
-	private long sucursalId;
+	private long idSucursal;
 	private String tipo;
 	private int capacidad;
 	private int capacidadOcupada;
+	private String tipoProducto;
 	
 	public Contenedor()
 	{
@@ -15,16 +16,32 @@ public class Contenedor implements VOContenedor{
 
 	
 
-	public Contenedor(long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada) {
+	public Contenedor(long id, long idSucursal, String tipo, int capacidad, int capacidadOcupada, String tipoProducto) {
 		super();
 		this.id = id;
-		this.sucursalId = sucursalId;
+		this.idSucursal = idSucursal;
 		this.tipo = tipo;
 		this.capacidad = capacidad;
 		this.capacidadOcupada = capacidadOcupada;
+		this.tipoProducto = tipoProducto;
 	}
-	
-	
+
+
+
+
+
+	public String getTipoProducto() {
+		return tipoProducto;
+	}
+
+
+
+	public void setTipoProducto(String tipoProducto) {
+		this.tipoProducto = tipoProducto;
+	}
+
+
+
 	public long getId() {
 		return id;
 	}
@@ -34,21 +51,16 @@ public class Contenedor implements VOContenedor{
 	public void setId(long id) {
 		this.id = id;
 	}
-
-
-
-	public long getSucursalId() {
-		return sucursalId;
+	
+	
+	public long getIdSucursal() {
+		return idSucursal;
 	}
-
-
-
-	public void setSucursalId(long sucursalId) {
-		this.sucursalId = sucursalId;
+	
+	public void setIdSucursal(long idSucursal) {
+		this.idSucursal = idSucursal;
 	}
-
-
-
+	
 	public int getCapacidadOcupada() {
 		return capacidadOcupada;
 	}

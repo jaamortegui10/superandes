@@ -1,6 +1,6 @@
 package uniandes.isis2304.superAndes.negocio;
 
-public class User implements VOUser{
+public class Usuario implements VOUsuario{
 	
 	private long id;
 	private String password;
@@ -8,12 +8,12 @@ public class User implements VOUser{
 	private String correo;
 	private String tipo;
 	
-	public User()
+	public Usuario()
 	{
 		
 	}
 
-	public User(long id, String password, String nombre, String correo, String tipo) {
+	public Usuario(long id, String password, String nombre, String correo, String tipo) {
 		super();
 		this.id = id;
 		this.password = password;

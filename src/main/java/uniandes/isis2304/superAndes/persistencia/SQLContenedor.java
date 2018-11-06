@@ -41,10 +41,10 @@ public class SQLContenedor {
 	 * @param capacidadOcupada
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada)
+	public long agregarTupla(PersistenceManager pm, long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada, String tipoProducto)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaContenedor() + "(id, sucursalId, tipo, capacidad, capacidadOcupada) values (?, ?, ?, ?, ?)");
-		q.setParameters(id, sucursalId, tipo, capacidad, capacidadOcupada);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaContenedor() + "(id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto) values (?, ?, ?, ?, ?, ?)");
+		q.setParameters(id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto);
 		return (long) q.executeUnique();
 	}
 	
@@ -70,10 +70,19 @@ public class SQLContenedor {
 	 */
 	public List<Contenedor> darContenedorPorSucursalId(PersistenceManager pm, long sucursalId)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE sucursalId = ?");
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE idSucursal = ?");
 		q.setResultClass(Contenedor.class);
 		q.setParameters(sucursalId);
 		return (List<Contenedor>) q.executeList();
+	}
+	
+	public List<Contenedor> darContenedoresPorSucursalIdYTipoProducto(PersistenceManager pm, long sucursalId, String tipoProducto)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE idSucursal = ? AND tipoProducto = ?");
+		q.setResultClass(Contenedor.class);
+		q.setParameters(sucursalId, tipoProducto);
+		return (List<Contenedor>) q.executeList();
+		
 	}
 	
 	/**

@@ -75,6 +75,18 @@ public class SQLOfrecidoSucursal {
 		return (OfrecidoSucursal) q.executeUnique();
 	}
 	
+	public OfrecidoSucursal darOfrecidoPorIdFisico(PersistenceManager pm, long idProductoFisico)
+	{
+		String sql = "Select os.*"
+				+" From OfrecidoSucursal os Inner Join ProductoFisico pf"
+				+" On os.id = pf.idOfrecido"
+				+" Where pf.id = ?";
+		Query q = pm.newQuery(SQL, sql);
+		q.setResultClass(OfrecidoSucursal.class);
+		q.setParameters(idProductoFisico);
+		return (OfrecidoSucursal) q.executeUnique();
+	}
+	
 	/**
 	 * Método que cambia el precio de una tupla con el idAbstracto, idSucursal dados opr parámetros.
 	 * @param pm

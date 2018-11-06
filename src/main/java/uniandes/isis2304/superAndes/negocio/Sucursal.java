@@ -10,7 +10,10 @@ public class Sucursal implements VOSucursal{
 	private int nivelReAbastecimiento;
 	private long idCiudad;
 	
-	
+	public Sucursal()
+	{
+		
+	}
 	
 	public Sucursal(long id, String nombre, int tamanho, String direccion, int nivelReorden,
 			int nivelReAbastecimiento , long idCiudad) {

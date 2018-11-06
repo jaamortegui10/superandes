@@ -1,6 +1,6 @@
 package uniandes.isis2304.superAndes.negocio;
 
-public interface VOUser {
+public interface VOUsuario {
 	public long getId();
 	public String getPassword();
 	public String getNombre();

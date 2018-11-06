@@ -32,16 +32,16 @@
 		
 	},
 	{
-		"menuTite":"Lugar",
+		"menuTitle":"Ciudad",
 		"options":
 		[
 			{
 				"label":"Adicionar",
-				"event":"adicionarLugar"
+				"event":"adicionarCiudad"
 			},
 			{
 				"label":"Listar",
-				"event":"listarLugar"
+				"event":"listarCiudad"
 			}
 		]
 	},
@@ -110,11 +110,11 @@
 			},
 			{
 				"label":"Listar Ofrecido Por Proveedor",
-				"event":"listarProductoOfrecidoPorProveedor"
+				"event":"listarProductoOfrecidoProveedor"
 			},
 			{
 				"label":"Listar Ofrecido Por Sucursal",
-				"event":"listarProductoOfrecidoPorSucursal"
+				"event":"listarProductoOfrecidoSucursal"
 			},
 			{
 				"label":"Listar Fisico Por Sucursal",
@@ -179,12 +179,28 @@
 		"options":
 		[
 			{
-				"label":"Adicionar",
-				"event":"adicionarCarrito"
+				"label":"Pedir",
+				"event":"pedirCarrito"
 			},
 			{
 				"label":"Listar",
 				"event":"listarCarrito"
+			},
+			{
+				"label":"Mostar",
+				"event":"mostrarCarrito"
+			},
+			{
+				"label":"Ingresar Producto",
+				"event": "ingresarProductoACarrito"
+			},
+			{
+				"label":"Devolver Producto",
+				"event": "devolverProductoDeCarrito"
+			},
+			{
+				"label":"Devolver Carrito",
+				"event":"devolverCarrito"
 			}
 		]
 	},
@@ -193,15 +209,15 @@
 		"options":
 		[
 			{
-					"label": "Mostrar log Parranderos",
-					"event": "mostrarLogParranderos"
+					"label": "Mostrar log SuperAndes",
+					"event": "mostrarLogSuperAndes"
 				},
 				{
 					"label": "Mostrar log datanucleus",
 					"event": "mostrarLogDatanuecleus"
 				},
 				{
-					"label": "Limpiar log de parranderos",
+					"label": "Limpiar log de SuperAndes",
 					"event": "limpiarLogParranderos"
 				},
 				{
@@ -239,7 +255,7 @@
 					"event": "mostrarArqRef"
 				},
 				{
-					"label": "Javadoc Parranderos",
+					"label": "Javadoc SuperAndes",
 					"event": "mostrarJavadoc"
 				}
 			]

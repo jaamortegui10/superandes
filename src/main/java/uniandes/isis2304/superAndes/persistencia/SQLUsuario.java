@@ -5,9 +5,9 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import uniandes.isis2304.superAndes.negocio.User;
+import uniandes.isis2304.superAndes.negocio.Usuario;
 
-public class SQLUser {
+public class SQLUsuario {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
@@ -28,7 +28,7 @@ public class SQLUser {
 	 * Método constructor de la clase.
 	 * @param psa
 	 */
-	public SQLUser(PersistenciaSuperAndes psa)
+	public SQLUsuario(PersistenciaSuperAndes psa)
 	{
 		this.psa = psa;
 	}
@@ -45,6 +45,7 @@ public class SQLUser {
 	 */
 	public long agregarTupla(PersistenceManager pm, long id, String password, String nombre, String correo, String tipo)
 	{
+		System.out.println("---------------->>>> Se está agregando un usuario.");
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaUser() + "(id, password, nombre, correo, tipo) values (?, ?, ?, ?, ?)");
 		q.setParameters(id, password, nombre, correo, tipo);
 		return (long) q.executeUnique();
@@ -55,11 +56,11 @@ public class SQLUser {
 	 * @param pm
 	 * @return
 	 */
-	public List<User> darUsuarios(PersistenceManager pm)
+	public List<Usuario> darUsuarios(PersistenceManager pm)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaUser());
-		q.setResultClass(User.class);
-		return (List<User>) q.executeList();
+		q.setResultClass(Usuario.class);
+		return (List<Usuario>) q.executeList();
 	}
 	
 	

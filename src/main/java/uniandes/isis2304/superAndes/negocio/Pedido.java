@@ -22,6 +22,10 @@ public class Pedido implements VOPedido{
 	private String calidad;
 	private int calificacion;
 	
+	public Pedido()
+	{
+		
+	}
 	public Pedido(long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega, String calidad, int calificacion) {
 		super();
 		this.id = id;

@@ -41,8 +41,9 @@ public class SQLEmpresa {
 	 */
 	public long agregarProveedor(PersistenceManager pm, int nit, long idUser, String dir, String tipoEmpresa )
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, tipoEmpresa) values (?, ?, ?, ?)");
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, puntos, tipoEmpresa) values (?, ?, ?, -1, ?)");
 		q.setParameters(nit, idUser, dir, tipoEmpresa);
+		System.out.println("A punto de agregar proveedor: " + nit + ": " + idUser + ": " + dir + ": " + tipoEmpresa);
 		return (long) q.executeUnique();
 	}
 	
@@ -56,10 +57,10 @@ public class SQLEmpresa {
 	 * @param tipoEmpresa
 	 * @return
 	 */
-	public long agregarCliente(PersistenceManager pm, int nit, long idUser, String dir, int puntos, String tipoEmpresa)
+	public long agregarCliente(PersistenceManager pm, int nit, long idUser, String dir, String tipoEmpresa)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, puntos, tipoEmpresa) values (?, ?, ?, ?, ?)");
-		q.setParameters(nit, idUser, dir, puntos, tipoEmpresa);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaEmpresa() + "(nit, idUser, dir, puntos, tipoEmpresa) values (?, ?, ?, 0, ?)");
+		q.setParameters(nit, idUser, dir, tipoEmpresa);
 		return (long) q.executeUnique();
 	}
 	
@@ -71,9 +72,13 @@ public class SQLEmpresa {
 	 */
 	public List<Empresa> darEmpresasPorTipo(PersistenceManager pm, String tipoEmpresa)
 	{
+		System.out.println("En sqlEmpresa");
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaEmpresa() + " WHERE tipoEmpresa = ?");
 		q.setResultClass(Empresa.class);
 		q.setParameters(tipoEmpresa);
+		System.out.println("Buscando empresas por tipo: " + tipoEmpresa);
+		System.out.println("Se buscan con el query: " + q.toString()
+		+ "\n.... " + q.getSerializeRead());
 		return (List<Empresa>) q.executeList();
 	}
 	

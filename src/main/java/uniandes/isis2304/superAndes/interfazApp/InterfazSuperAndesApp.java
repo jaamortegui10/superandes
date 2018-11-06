@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jdo.JDODataStoreException;
 import javax.swing.ImageIcon;
@@ -22,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -31,7 +34,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import uniandes.isis2304.superAndes.negocio.SuperAndes;
+import uniandes.isis2304.superAndes.negocio.VOCarrito;
+import uniandes.isis2304.superAndes.negocio.VOCategoria;
+import uniandes.isis2304.superAndes.negocio.VOCiudad;
+import uniandes.isis2304.superAndes.negocio.VOEmpresa;
+import uniandes.isis2304.superAndes.negocio.VOOfrecidoProveedor;
+import uniandes.isis2304.superAndes.negocio.VOOfrecidoSucursal;
+import uniandes.isis2304.superAndes.negocio.VOPersona;
+import uniandes.isis2304.superAndes.negocio.VOProductoAbstracto;
+import uniandes.isis2304.superAndes.negocio.VOProductoFisico;
+import uniandes.isis2304.superAndes.negocio.VOPromocion;
+import uniandes.isis2304.superAndes.negocio.VOSucursal;
 
+@SuppressWarnings("serial")
 public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 
 	/*
@@ -146,6 +161,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 
 		setTitle(titulo);
 		setSize(ancho, alto);
+		setVisible(true);
 	}
 
 	private void crearMenu(JsonArray jsonMenu) {
@@ -177,41 +193,470 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 		setJMenuBar(menuBar);
 	}
 	/*
-	 * **************************************************************** CRUD de
-	 * tabla1
+	 * **************************************************************** 
+	 * CRUD de Usuario
+
 	 *****************************************************************/
+	/**
+	 * Método para adicionar un usuario.
+	 */
+	public void adicionarUsuario()
+	{
+		try
+		{
+			String resultado = "" ;
+			
+			String nombre = JOptionPane.showInputDialog("Ingrese su nombre.");
+			String password = JOptionPane.showInputDialog("Ingrese su password");
+			String correo = JOptionPane.showInputDialog("Ingrese su correo.");
+			String tipo = JOptionPane.showInputDialog("Ingrese el tipo de usuario: persona, empresa");
+			
+			if(tipo.equals("persona"))
+			{
+				String tipoPersona = JOptionPane.showInputDialog("Intrese el tipo de persona: cliente, trabajador_sucursal");
+				int idSucursal = -1;
+				if(tipoPersona.equals("trabajador_sucursal"))
+					idSucursal = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el id de la sucursal del trabajador"));
+				int cedula = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cédula"));
+				VOPersona agregada = superAndes.agregarPersona(cedula, idSucursal, password, nombre, correo, tipoPersona);
+				resultado += "En agregar Persona"
+						+ "\nPersona adicionada exitosamente: " + agregada
+						+ "\n Operación terminada";
+			}
+			else if(tipo.equals("empresa"))
+			{
+				int nit = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nit de la empresa"));
+				String direccion = JOptionPane.showInputDialog("Ingrese la dirección");
+				String tipoEmpresa = JOptionPane.showInputDialog("Ingrese el tipo de empresa: proveedor, cliente");
+				System.out.println("------------>Interfaz antes de: ");
+				VOEmpresa agregada = superAndes.agregarEmpresa(nit, direccion, password, nombre, correo, tipoEmpresa);
+				resultado += "En agregar empresa"
+						+ "\nEmpresa adicionada exitosamente: " + agregada
+						+ "\n Operación terminada";
+			}//Aquí estaba agregando usuario, así que ese era el problema.
+			else
+				throw new Exception("El tipo ingresado no es válido.");
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	/*
+	 * **************************************************************** CRUD de
+	 * CRUD de Empresa
+	 *****************************************************************/
+	public void listarProveedor()
+	{
+		try
+		{
+			List<VOEmpresa> lista = superAndes.darEmpresasPorTipoEmpresa("proveedor");
+			System.out.println("Listando proveedor.");
+			String resultado = "En Listar Proveedor";
+			resultado += "\n" + listarProveedores(lista);
+			panelDatos.actualizarPanel(resultado);
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarClienteEmpresa()
+	{
+		try
+		{
+			List<VOEmpresa> lista = superAndes.darEmpresasPorTipoEmpresa("cliente");
+			String resultado = "En Listar Cliente Empresa";
+			resultado += "\n" + listarClientesEmpresa(lista);
+			panelDatos.actualizarPanel(resultado);
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	
+	/*
+	 * **************************************************************** CRUD de
+	 * CRUD Persona
+	 *****************************************************************/
+	public void listarTrabajadorSucursal()
+	{
+		try
+		{
+			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("trabajador_sucursal");
+			String resultado = "En listar Trabajador Sucursal";
+			resultado += "\n" + listarTrabajadoresSucursales(lista);
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarClientePersona()
+	{
+		try
+		{
+			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("cliente");
+			String resultado = "En listar Cliente Persona";
+			resultado += "\n" + listarClientesPersona(lista);
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
 	 *****************************************************************/
+	public void adicionarCiudad()
+	{
+		try
+		{
+			String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la ciudad");
+			VOCiudad agregada = superAndes.agregarCiudad(nombre);
+			String respuesta = "En Adicionar Lugar"
+					+ "\nAdicionada: " + agregada;
+			panelDatos.actualizarPanel(respuesta);
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarCiudad()
+	{
+		try
+		{
+			List<VOCiudad> lista = superAndes.darCiudades();
+			String resultado = "En listar ciudad";
+			resultado += "\n" + listarCiudades(lista);
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	/*
+	 * **************************************************************** CRUD de
+	 * CRUD Categoria
+	 *****************************************************************/
+	public void adicionarCategoria()
+	{
+		String nombre = JOptionPane.showInputDialog("Ingrese el nombre");
+		String caracteristicas = JOptionPane.showInputDialog("Ingrese las características");
+		String almacenamiento = JOptionPane.showInputDialog("Ingrese el tipo de almacenamiento");
+		String manejo = JOptionPane.showInputDialog("Ingrese el manejo que se le debe dar.");
+		
+		VOCategoria categoria = superAndes.agregarCategoria(nombre, caracteristicas, almacenamiento, manejo);
+		String respuesta = "En adicionar categora"
+				+ "\n categoría: " + categoria;
+		panelDatos.actualizarPanel(respuesta);;
+	}
+	
+	public void listarCategoria()
+	{
+		try
+		{
+			List<VOCategoria > lista = superAndes.darCategorias();
+			String respuesta = "En listar categoria";
+			respuesta += "\n" + listarCategorias(lista);
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+		
+	}
+	
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
 	 *****************************************************************/
+	public void adicionarSucursal()	
+	{
+		try
+		{
+			String nombre = JOptionPane.showInputDialog("Introduzca el nombre");
+			int tamanho = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el tamaño"));
+			String direccion = JOptionPane.showInputDialog("Intrese la dirección de la sucursal.");
+			int nivelReorden = Integer.parseInt(JOptionPane.showInputDialog("Introduzca el nivel de reorden."));
+			int nivelReabastecimiento = Integer.parseInt(JOptionPane.showInputDialog("Introduzca el nivel de reabastecimiento"));
+			long idCiudad = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de la ciudad"));
+			VOSucursal sucursal = superAndes.agregarSucursal(nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad);
+			
+			String respuesta = "En Adicionar Sucursal";
+			respuesta += "\n"+ sucursal;
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarSucursal()
+	{
+		try
+		{
+			List<VOSucursal> lista = superAndes.darSucursales();
+			String respuesta = "En Listar Sucursal";
+			respuesta += "\n" + listarSucursales(lista);
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
 	 *****************************************************************/
+	public void adicionarContenedor()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarContenedor()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
 	 *****************************************************************/
+	public void adicionarProductoAbstracto(){
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void adicionarProductoOfrecidoSucursal()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void adicionarProductoOfrecidoProveedor()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void adicionarProductoFisico()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarProductoOfrecidoProveedor()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarProductoOfrecidoSucursal()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarProductoFisicoPorSucursal()
+	{
+		try
+		{
+			String respuesta = "En listar productos físicos por sucursal";
+			long idSucursal = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de la sucursal"));
+			List<VOProductoFisico> lista = superAndes.darProductosFisicosPorIdSucursal(idSucursal);
+			respuesta += "\n" + listarProductosFisicos(lista);
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarProductoFisicoPorContenedor()
+	{
+		try
+		{
+			
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
 	/*
 	 * **************************************************************** CRUD de
-	 * tabla1
+	 * CRUD de Carrito
 	 *****************************************************************/
-	/*
-	 * **************************************************************** CRUD de
-	 * tabla1
-	 *****************************************************************/
-	/*
-	 * **************************************************************** CRUD de
-	 * tabla1
-	 *****************************************************************/
-	/*
-	 * **************************************************************** CRUD de
-	 * tabla1
-	 *****************************************************************/
+	public void pedirCarrito()
+	{
+		try
+		{
+			long idUser = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de usuario"));
+			VOCarrito carrito = superAndes.agregarCarrito(idUser);
+			String respuesta = "En Pedir Carrito";
+			respuesta += "\n" + carrito;
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void listarCarrito()
+	{
+		try
+		{
+			List<VOCarrito> lista = superAndes.darCarritos();
+			String respuesta = "En listar carritos";
+			respuesta += "\n" + listarCarritos(lista);
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void mostrarCarrito()
+	{
+		try
+		{
+			String respuesta = "En mostrar carrito";
+			long usuarioId = Long.parseLong(JOptionPane.showInputDialog("Intrese el id de usuario"));
+			VOCarrito carrito = superAndes.darCarritoPorUsuarioId(usuarioId);
+			List<VOProductoFisico> productos = superAndes.darProductosPorCarritoId(carrito.getId());
+			respuesta += listarCarritoConProductos(carrito,  productos);
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void ingresarProductoACarrito()
+	{
+		try
+		{
+			String respuesta = "En Ingresar producto a carrito";
+			long usuarioId = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del usuario"));
+			long productoFisicoId = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del producto físico"));
+			long resultadoInsercion = superAndes.cambiarProductoACarrito(productoFisicoId, usuarioId);
+			respuesta += "\n" + resultadoInsercion;
+			panelDatos.actualizarPanel(respuesta);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void devolverProductoDeCarrito()
+	{
+		try
+		{
+			
+			long idUsuario = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del usuario"));
+			long productoFisicoId = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del producto físico"));
+			String resultado = "En devolver producto de carrito.";
+			long resultadoQuery = superAndes.cambiarProductoAContenedor(productoFisicoId, idUsuario);
+			resultado += "\n" + resultadoQuery;
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			System.out.println(e.getMessage());
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
+	
+	public void devolverCarrito()
+	{
+		try
+		{
+			long usuarioId = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de usuario"));
+			long resultadoQuery = superAndes.devolverCarrito(usuarioId);
+			String respuesta = "En devolver carrito";
+			respuesta += "\n" + resultadoQuery;
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			System.out.println(e.getMessage());
+			panelDatos.actualizarPanel(resultado);
+		}
+	}
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
@@ -272,7 +717,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	 */
 	public void mostrarLogSuperAndes ()
 	{
-		mostrarArchivo ("superAndes.log");
+		mostrarArchivo ("superandes.log");
 	}
 	
 	/**
@@ -384,7 +829,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	 */
 	public void mostrarEsquemaBD ()
 	{
-		mostrarArchivo ("data/Esquema BD SuperAndes.pdf");
+		mostrarArchivo ("data/EsquemaBDSuperAndes.xlsx");
 	}
 	
 	/**
@@ -441,7 +886,229 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     /* ****************************************************************
 	 * 			Métodos privados para la presentación de resultados y otras operaciones
 	 *****************************************************************/
-	 /**
+	 
+    private String listarProveedores(List<VOEmpresa> proveedores)
+    {
+    	String respuesta = "";
+    	for(VOEmpresa empresaActual: proveedores)
+    		respuesta += "\n***********************" 
+    		+ "\n nit:"+empresaActual.getNit() 
+    		+ "\n idUser: " + empresaActual.getIdUser()
+    		+"\n tipo:" + empresaActual.getTipoEmpresa()
+    		+ "\n dir:: " + empresaActual.getDir();
+    	return respuesta;
+    }
+    
+    private String listarClientesEmpresa(List<VOEmpresa> clientes)
+    {
+    	String respuesta = "";
+    	for(VOEmpresa empresaActual: clientes)
+    	{
+    		respuesta += "\n***********************"
+    				+ "\n nit:" + empresaActual.getNit()
+    				+ "\n idUser: " + empresaActual.getIdUser()
+    				+ "\n tipo: " + empresaActual.getTipoEmpresa()
+    				+ "\n puntos: " + empresaActual.getPuntos();
+    	}
+    	
+    	return respuesta;
+    }
+    
+    private String listarClientesPersona(List<VOPersona> clientes)
+    {
+    	String respuesta = "";
+    	for(VOPersona personaActual: clientes)
+    	{
+    		respuesta += "\n**********************"
+    				+ "\n cedula: " + personaActual.getCedula()
+    				+ "\n idUser: " + personaActual.getIdUser()
+    				+ "\n puntosCompras: " + personaActual.getPuntos()
+    				+ "\n tipo: :" + personaActual.getTipoPersona();
+    	}
+    	
+    	return respuesta;
+    }
+    
+    private String listarCiudades(List<VOCiudad> ciudades)
+    {
+    	String respuesta = "";
+    	for(VOCiudad ciudadActual: ciudades)
+    	{
+    		respuesta += "\n*************"
+    				+ "\n id: " + ciudadActual.getId()
+    				+ "\n nombre: " + ciudadActual.getNombre();
+    	}
+    	
+    	return respuesta;
+    	
+    }
+    
+    private String listarCategorias(List<VOCategoria> categorias)
+    {
+    	String respuesta = "";
+    	for(VOCategoria categoriaActual: categorias)
+    	{
+    		respuesta += "***********************"
+        			+ "\n nombre: " + categoriaActual.getNombre() 
+        			+ "\n almacenamiento: " + categoriaActual.getAlmacenamiento()
+        			+ "\n caracteristicas:" + categoriaActual.getCaracteristicas()
+        			+ "\n " + categoriaActual.getManejo();
+    	}    	
+    	return respuesta;
+    }
+    
+    
+    
+    private String listarTrabajadoresSucursales(List<VOPersona> trabajadores)
+    {
+    	String respuesta = "";
+    	for(VOPersona trabajadorActual: trabajadores)
+    	{
+    		respuesta += "\n***********************"
+    				+ "\n cedula: " + trabajadorActual.getCedula()
+    				+ "\n idUser: " + trabajadorActual.getIdUser()
+    				+ "\n sucursalId: " + trabajadorActual.getSucursalId()
+    				+ "\n tipoPersona: " + trabajadorActual.getTipoPersona();
+    	}
+    	return respuesta;
+    }
+    
+    private String listarPromociones(List<VOPromocion> promociones)
+    {
+    	String respuesta = "";
+    	for(VOPromocion promocionActual: promociones)
+    	{
+    		respuesta += "\n*************************"
+    				+ "\n id: " + promocionActual.getId()
+    				+ "\n sucursalId: " + promocionActual.getIdSucursal()
+    				+ "\n descripción: " + promocionActual.getDescripcion();
+    	}
+    	
+    	return respuesta;
+    }
+    
+    private String listarSucursales(List<VOSucursal> sucursales)
+    {
+    	String respuesta = "";
+    	for(VOSucursal sucursalActual: sucursales)
+    	{
+    		respuesta += "\n**************************"
+    				+ "\n id: " + sucursalActual.getId()
+    				+ "\n nombre: " + sucursalActual.getNombre()
+    				+ "\n tamaño: " + sucursalActual.getTamanho()
+    				+ "\n idCiudad: " + sucursalActual.getIdCiudad()
+    				+ "\n dirección: " + sucursalActual.getDireccion();
+    		
+    	}
+    	return respuesta;
+    }
+    
+    private String listarProductosAbstractos(List<VOProductoAbstracto> productos)
+    {
+    	String respuesta = "";
+    	for(VOProductoAbstracto prodAbstractoActual: productos)
+    	{
+    		respuesta += "\n******************************"
+    				+ "\n id: " + prodAbstractoActual.getId()
+    				+ "\n nombre: " + prodAbstractoActual.getNombre()
+    				+ "\n categoria: " + prodAbstractoActual.getCategoria()
+    				+ "\n unidad Medida: " + prodAbstractoActual.getUnidadMedida()
+    				+ "\n tipo: " + prodAbstractoActual.getTipo();
+    	}
+    	
+    	return respuesta;
+    }
+    
+    private String listarOfrecidoProveedor(List<VOOfrecidoProveedor> ofrecidos)
+    {
+    	String respuesta = "";
+    	for(VOOfrecidoProveedor ofrecidoActual: ofrecidos)
+    	{
+    		respuesta += "\n************************"
+    				+ "\n id:" + ofrecidoActual.getId()
+    				+ "\n id Abstracto: " + ofrecidoActual.getIdAbstracto()
+    				+ "\n nit Proveedor: " + ofrecidoActual.getNitProveedor()
+    				+ "\n precio: " + ofrecidoActual.getPrecio();
+    	}
+    	return respuesta;
+    }
+    
+    private String listarOfrecidoSucursal(List<VOOfrecidoSucursal> ofrecidos)
+    {
+    	String respuesta = "";
+    	for(VOOfrecidoSucursal ofrecidoActual: ofrecidos)
+    	{
+    		respuesta += "\n*******************"
+    				+ "\n id: " + ofrecidoActual.getId()
+    				+ "\n id Abstracto: " + ofrecidoActual.getIdAbstracto()
+    				+ "\n id Sucursal: " + ofrecidoActual.getIdSucursal()
+    				+ "\n precio: " + ofrecidoActual.getPrecio();
+    	}
+    	return respuesta;
+    }
+    
+    
+    private String listarProductosFisicos(List<VOProductoFisico> fisicos)
+    {
+    	String respuesta = "";
+    	for(VOProductoFisico fisicoActual: fisicos)
+    	{
+    		respuesta += "\n********************"
+    				+ "\n id:" + fisicoActual.getId()
+    				+ "\n id Ofrecido: " + fisicoActual.getIdOfrecido()
+    				+ "\n cantidad medida: " + fisicoActual.getCantidadMedida()
+    				+ "\n Código Barras: " + fisicoActual.getCodigoBarras()
+    				+ "\n id Contenedor: " + fisicoActual.getIdContenedor();
+    	}
+    	
+    	return respuesta;
+    }
+    
+    private String listarProductosFisicosEnCarrito(List<VOProductoFisico> fisicos)
+    {
+    	String respuesta = "";
+    	for(VOProductoFisico fisicoActual: fisicos)
+    	{
+    		respuesta += "\n********************"
+    				+ "\n id:" + fisicoActual.getId()
+    				+ "\n id Ofrecido: " + fisicoActual.getIdOfrecido()
+    				+ "\n cantidad medida: " + fisicoActual.getCantidadMedida()
+    				+ "\n Código Barras: " + fisicoActual.getCodigoBarras()
+    				+ "\n id Carrito: " + fisicoActual.getIdCarrito();
+    	}
+    	return respuesta;
+    }
+    
+    private String listarCarritos(List<VOCarrito> carritos)
+    {
+    	String respuesta = "";
+    	for(VOCarrito carritoActual: carritos)
+    	{
+    		respuesta += "\n********************"
+    				+ "\n id: " + carritoActual.getId()
+    				+ "\n id User: " + carritoActual.getIdUser();
+    	}
+    	return respuesta;
+    }
+    
+    private String listarCarritoConProductos(VOCarrito carrito, List<VOProductoFisico> productos)
+    {
+    	String respuesta = "";
+    	respuesta += "\n********************"
+				+ "\n id: " + carrito.getId()
+				+ "\n id User: " + carrito.getIdUser();
+    	respuesta += "\n----"
+    			+"\nproductos: ";
+    	for(VOProductoFisico productoActual : productos)
+    	{
+    		respuesta += "\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
+    				+ "\n id: " + productoActual.getId()
+    				+ "\n id Ofrecido: " + productoActual.getIdOfrecido()
+    				+ "\n Código Barras: " + productoActual.getCodigoBarras();
+    	}
+    	return respuesta;
+    }
+	/**
      * Genera una cadena de caracteres con la descripción de la excepcion e, haciendo énfasis en las excepcionsde JDO
      * @param e - La excepción recibida
      * @return La descripción de la excepción, cuando es javax.jdo.JDODataStoreException, "" de lo contrario
@@ -536,7 +1203,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	{
 		try
         {
-        	
+			BasicConfigurator.configure();
             // Unifica la interfaz para Mac y para Windows.
             UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
             InterfazSuperAndesApp interfaz = new InterfazSuperAndesApp( );

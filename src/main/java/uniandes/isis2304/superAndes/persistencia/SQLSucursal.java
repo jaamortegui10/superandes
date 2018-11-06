@@ -48,7 +48,7 @@ public class SQLSucursal {
 	public long agregarTupla(PersistenceManager pm, long id, String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad)
 	{
 		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaSucursal() + "(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad) values (?, ?, ?, ?, ?, ?, ?)");
-		q.setParameters(id, nombre, direccion, tamanho, nivelReorden, nivelReabastecimiento, idCiudad);
+		q.setParameters(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad);
 		return (long) q.executeUnique();
 	}
 	

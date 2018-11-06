@@ -46,6 +46,16 @@ public class SQLCarrito {
 		return (List<Carrito>) q.executeList();
 	}
 	
+	public Carrito darCarritoPorUsuarioId(PersistenceManager pm, long usuarioId)
+	{
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaCarrito() + " WHERE idUser = ?");
+		q.setResultClass(Carrito.class);
+		q.setParameters(usuarioId);
+		
+		System.out.println("-------------------------------->En buscar carrito por id User: idUser:" + usuarioId );
+		return (Carrito) q.executeUnique();
+	}
+	
 	/**
 	 * Método que agrega una nueva tupla a la relación Carrito.
 	 * @param pm
@@ -71,5 +81,12 @@ public class SQLCarrito {
 		Query q = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCarrito() + " WHERE id = ?");
 		q.setParameters(id);
 		return (long) q.executeUnique();
+	}
+	
+	public long cambiarIdUserANull(PersistenceManager pm)
+	{
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaCarrito() + " SET idUser = null");
+		return (long) q.executeUnique();
+	
 	}
 }

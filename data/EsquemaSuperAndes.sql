@@ -106,6 +106,9 @@ ADD CONSTRAINT CONTENEDOR_cap_vs_Ocup
 CHECK (capacidadOcupada <= capacidad)
 ENABLE;
 
+ALTER TABLE CONTENEDOR
+ADD tipoProducto VARCHAR(20);
+
 --Creación de la tabla A_CARRITO
 
 CREATE TABLE CARRITO(id Number, idUser Number,

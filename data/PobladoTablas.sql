@@ -53,3 +53,25 @@ insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values (
 insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('enlatados');
 insert into CATEGORIA (nombre, caracteristicas, almacenamiento, manejo) values ('salsas');
 
+
+
+
+insert into Categoria(nombre, caracteristicas, almacenamiento, manejo) values ('no_perecederos', 'No perecen fácilmente', 'Cereales', 'tratar como sea');
+
+insert into Usuario(id, password, nombre, correo, tipo) values (2000,'abcd1234', 'confenalco', 'confe@gmail.com', 'empresa');
+insert into empresa(nit, iduser, dir, puntos, tipoEmpresa) values (10000, 2000, 'dir1',-1,'proveedor');
+
+insert into Usuario(id, password, nombre, correo, tipo) values (2000, 'pass1', 'Carlos', 'carlos@a', 'persona');
+insert into Persona(cedula, idUser, puntos, idSucursal, tipoPersona) values (1000000, 2000, -1, 24, 'trabajador_sucursal');
+insert into Usuario(id, password, nombre, correo, tipo) values (2001, 'pass2', 'Pardo', 'pardo@a', 'persona');
+insert into Persona(cedula, idUser, puntos, idSucursal, tipoPersona) values (1000001, 2001, 0, -1, 'cliente');
+insert into Usuario(id, password, nombre, correo, tipo) values (2002, 'pass3', 'Fabian', 'fabian@a', 'persona');
+insert into Persona(cedula, idUser, puntos, idSucursal, tipoPersona) values (1000002, 2002, 0, -1, 'cliente');
+
+insert into Contenedor(id, idSucursal, tipo, capacidad, caacidadOcupada) values (2002, 24, 'estante', 200, 0, 'Cereales');
+insert into Contenedor(id, idSucursal, tipo, capacidad, caacidadOcupada) values (2003, 24, 'estante', 200, 0, 'Cereales');
+
+insert into ProductoAnullbstracto(id, nombre, tipo, unidadmedida, categoria) values ();
+
+
+

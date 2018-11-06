@@ -35,7 +35,8 @@ import uniandes.isis2304.superAndes.negocio.PromocionPorCantidadOUnidad;
 import uniandes.isis2304.superAndes.negocio.PromocionPorcentajeDescuento;
 import uniandes.isis2304.superAndes.negocio.ProveedorSucursal;
 import uniandes.isis2304.superAndes.negocio.Sucursal;
-import uniandes.isis2304.superAndes.negocio.User;
+import uniandes.isis2304.superAndes.negocio.Usuario;
+import uniandes.isis2304.superAndes.negocio.VOProductoFisico;
 
 public class PersistenciaSuperAndes {
 	/* ****************************************************************
@@ -71,7 +72,7 @@ public class PersistenciaSuperAndes {
 	/**
 	 * Atributo para el acceso a la tabla User de la base de datos.
 	 */
-	private SQLUser sqlUser;
+	private SQLUsuario sqlUser;
 	/**
 	 * Atributo para el acceso a la tabla Persona de la base de datos.
 	 */
@@ -261,7 +262,7 @@ public class PersistenciaSuperAndes {
 	
 	private void crearClasesSQL()
 	{
-		sqlUser = new SQLUser(this);
+		sqlUser = new SQLUsuario(this);
 		sqlPersona = new SQLPersona(this);	
 		sqlEmpresa = new SQLEmpresa(this);
 		sqlSucursal = new SQLSucursal(this);
@@ -282,6 +283,7 @@ public class PersistenciaSuperAndes {
 		sqlFactura = new SQLFactura(this);
 		sqlItemFactura = new SQLItemFactura(this);
 		sqlCarrito = new SQLCarrito(this);
+		sqlUtil = new SQLUtil(this);
 		
 	}
 	
@@ -504,7 +506,7 @@ public class PersistenciaSuperAndes {
 		}
 	}
 	
-	public Contenedor agregarContenedor( long sucursalId, String tipo, int capacidad, int capacidadOcupada)
+	public Contenedor agregarContenedor( long sucursalId, String tipo, int capacidad, int capacidadOcupada, String tipoProducto)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -512,11 +514,11 @@ public class PersistenciaSuperAndes {
 		{
 			tx.begin();
 			long id = nextVal();
-			long tuplasInsertadas = sqlContenedor.agregarTupla(pm, id, sucursalId, tipo, capacidad, capacidadOcupada);
+			long tuplasInsertadas = sqlContenedor.agregarTupla(pm, id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto);
 			tx.commit();
 			
 			log.trace("Inserción de contenedor: " + id + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new Contenedor(id, sucursalId, tipo, capacidad, capacidadOcupada);
+			return new Contenedor(id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
@@ -539,6 +541,7 @@ public class PersistenciaSuperAndes {
 		Transaction tx = pm.currentTransaction();
 		try
 		{
+			System.out.println("Agregando proveedor en Persistencia.");
 			tx.begin();
 				double tuplasInsertadas;
 				tuplasInsertadas = sqlEmpresa.agregarProveedor(pm, nit, idUser, direccion, tipoEmpresa);
@@ -562,7 +565,7 @@ public class PersistenciaSuperAndes {
 		}
 	}
 	
-	public Empresa agregarEmpresaCliente( int nit, long idUser, String direccion, int puntosCompras, String tipoEmpresa )
+	public Empresa agregarEmpresaCliente( int nit, long idUser, String direccion, String tipoEmpresa )
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -570,11 +573,11 @@ public class PersistenciaSuperAndes {
 		{
 			tx.begin();
 				double tuplasInsertadas;
-				tuplasInsertadas = sqlEmpresa.agregarCliente(pm, nit, idUser, direccion, puntosCompras, tipoEmpresa);
+				tuplasInsertadas = sqlEmpresa.agregarCliente(pm, nit, idUser, direccion, tipoEmpresa);
 			tx.commit();
 			
 			log.trace("Inserción de Empresa: " + nit + "," + tipoEmpresa +  ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new Empresa(nit, idUser, direccion, puntosCompras, tipoEmpresa);
+			return new Empresa(nit, idUser, direccion, 0, tipoEmpresa);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
@@ -732,7 +735,7 @@ public class PersistenciaSuperAndes {
     }
     
     //¿La comparación de los if va en la lógica?
-    public Persona agregarPersonaCliente(  int cedula, long idUser,  int puntos,String tipoPersona)
+    public Persona agregarPersonaCliente(  int cedula, long idUser,String tipoPersona)
     {
     	PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
@@ -740,11 +743,11 @@ public class PersistenciaSuperAndes {
 		{
 			tx.begin();
 				long tuplasInsertadas;
-				tuplasInsertadas = sqlPersona.agregarCliente(pm, cedula, idUser, puntos, tipoPersona);
+				tuplasInsertadas = sqlPersona.agregarCliente(pm, cedula, idUser, tipoPersona);
 			tx.commit();
 			
 			log.trace("Inserción de Persona: " + cedula + ","+ tipoPersona + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new Persona(cedula, idUser,  puntos, -1, tipoPersona);
+			return new Persona(cedula, idUser, 0, -1, tipoPersona);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
@@ -1039,19 +1042,24 @@ public class PersistenciaSuperAndes {
 		}
     }
     
-    public User agregarUser( String password, String nombre, String correo, String tipo)
+    public Usuario agregarUser( String password, String nombre, String correo, String tipo)
     {
+    	System.out.println("En persistencia.");
     	PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
+		System.out.println("Pasó las dos primeras");
 		try
 		{
 			tx.begin();
+			System.out.println("Comenzó transacción.");
 			long id = nextVal();
+			System.out.println("Dió el próximo valor.");
 			long tuplasInsertadas = sqlUser.agregarTupla(pm, id, password, nombre, correo, tipo);
+			System.out.println("Agregó al usuario en el sqlUser.");
 			tx.commit();
-			
+			System.out.println("Se agregó usuario, estamos en persistencia en persistencia");
 			log.trace("Inserción de User: " + id + "," + nombre + ": " + tuplasInsertadas + "tuplas insertadas.");
-			return new User(id, password, nombre, correo, tipo);
+			return new Usuario(id, password, nombre, correo, tipo);
 		}catch(Exception e)
 		{
 			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
@@ -1072,6 +1080,213 @@ public class PersistenciaSuperAndes {
 	public List<Categoria> darCategorias()
 	{
 		return sqlCategoria.darCategorias(pmf.getPersistenceManager());
+	}
+	
+	public List<Persona> darPersonasPorTipoPersona(String tipoPersona)
+	{
+		return sqlPersona.darPersonasPorTipoPersona(pmf.getPersistenceManager(),  tipoPersona);
+	}
+	
+	public List<Empresa> darEmpresasPorTipoEmpresa(String tipoEmpresa)
+	{
+		System.out.println("En persistencia.");
+		return sqlEmpresa.darEmpresasPorTipo(pmf.getPersistenceManager(),tipoEmpresa);
+	}
+	
+	public List<Ciudad> darCiudades()
+	{
+		return sqlCiudad.darCiudades(pmf.getPersistenceManager());
+	}
+	
+	public Ciudad darCiudadPorId(long id)
+	{
+		return sqlCiudad.darCiudadPorId(pmf.getPersistenceManager(), id);
+	}
+	
+	public List<Sucursal> darSucursales()
+	{
+		return sqlSucursal.darSucursales(pmf.getPersistenceManager());
+	}
+	
+	public List<Contenedor> darContenedoresPorSucursalId(long sucursalId)
+	{
+		return sqlContenedor.darContenedorPorSucursalId(pmf.getPersistenceManager(), sucursalId);
+	}
+	
+	public List<Promocion> darPromocionesPorSucursalId(long idSucursal)
+	{
+		return sqlPromocion.darPromocionesPorIdSucursal(pmf.getPersistenceManager(), idSucursal);
+	}
+	
+	public List<Factura> darFacturasPorIdUser(long idUser)
+	{
+		return sqlFactura.darFacturasPorIdUser(pmf.getPersistenceManager(), idUser);
+	}
+	
+	public Factura darFacturaPorId(long id)
+	{
+		return sqlFactura.darFacturaPorId(pmf.getPersistenceManager(), id);
+	}
+	
+	public List<ItemFactura> darItemsFacturaPorFacturaId(long idFactura)
+	{
+		return sqlItemFactura.darItemsFacturaPorIdFactura(pmf.getPersistenceManager(), idFactura);
+	}
+	
+	public List<OfrecidoProveedor> darOfrecidosProveedorPorNITProveedor(int nitProveedor)
+	{
+		return sqlOfrecidoProveedor.darOfrecidosPorNitProveedor(pmf.getPersistenceManager(), nitProveedor);
+	}
+	
+	public List<OfrecidoSucursal> darOfrecidosSucursalPorSucursalId(long idSucursal)
+	{
+		return sqlOfrecidoSucursal.darOfrecidosPorIdSucursal(pmf.getPersistenceManager(), idSucursal);
+	}
+	
+	public List<ProductoFisico> darProductosFisicosPorIdContenedor(long idContenedor)
+	{
+		return sqlProductoFisico.darProductosFisicosPorIdContenedor(pmf.getPersistenceManager(), idContenedor);
+	}
+	
+	public List<Carrito> darCarritos()
+	{
+		return sqlCarrito.darCarritos(pmf.getPersistenceManager());
+	}
+	
+	public Carrito darCarritoPorUsuarioId(long usuarioId)
+	{
+		return sqlCarrito.darCarritoPorUsuarioId(pmf.getPersistenceManager(), usuarioId);
+	}
+	
+	public List<ProductoFisico> darProductosFisicosPorCarritoId(long carritoId)
+	{
+		return sqlProductoFisico.darProductosPorCarritoId(pmf.getPersistenceManager(), carritoId);
+	}
+	
+	public long cambiarProductoACarrito(long productoFisicoId, long carritoId)
+	{
+		long resultadoQuery = -1;
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		
+		try
+		{
+			tx.begin();
+			ProductoFisico producto = darProductoFisicoPorId(productoFisicoId);
+			resultadoQuery = sqlProductoFisico.cambiarProductoACarrito(pmf.getPersistenceManager(), productoFisicoId, carritoId);
+			this.cambiarCapacidadContenedor(producto.getIdContenedor(), producto, false);
+			tx.commit();
+			return resultadoQuery;
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return -1;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+		
+	}
+	
+	public long cambiarProductoAContenedor(long productoFisicoId, long usuarioId)
+	{
+		long resultadoQuery = -1;
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			
+			ProductoAbstracto productoAbstracto = sqlProductoAbstracto.darProductoPorIdProductoFisico(pmf.getPersistenceManager(), productoFisicoId);
+			long sucursalId = sqlOfrecidoSucursal.darOfrecidoPorIdFisico(pmf.getPersistenceManager(), productoFisicoId).getIdSucursal();
+			ProductoFisico productoFisico = sqlProductoFisico.darProductoFisicoPorId(pmf.getPersistenceManager(), usuarioId);
+			List<Contenedor> contenedores = sqlContenedor.darContenedoresPorSucursalIdYTipoProducto(pmf.getPersistenceManager(), sucursalId, productoAbstracto.getTipo());
+			int ocupacionProducto = productoFisico.getCantidadMedida();
+			long idContenedor = -1;
+			for(Contenedor contenedorActual: contenedores)
+			{
+				if(contenedorActual.getCapacidadOcupada() + ocupacionProducto <= contenedorActual.getCapacidad())
+				{
+					cambiarCapacidadContenedor(contenedorActual.getId(), productoFisico, true);
+					idContenedor = contenedorActual.getId();
+					break;
+				}
+					
+			}
+			if(idContenedor == -1)
+				throw new Exception("No se encontraron contenedores para devolver el producto.");
+			resultadoQuery = sqlProductoFisico.cambiardeIdCarritoAIdContenedor(pm, productoFisico.getId(), idContenedor);
+			
+			tx.commit();
+			return resultadoQuery;
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			return -1;
+			
+		}finally
+		{
+			 if (tx.isActive())
+	            {
+	                tx.rollback();
+	            }
+	            pm.close();
+		}
+	}
+	
+	public long devolverCarrito(long usuarioId)
+	{
+		long resultadoQuery = -1;
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		try
+		{
+			tx.begin();
+			resultadoQuery = sqlCarrito.cambiarIdUserANull(pmf.getPersistenceManager());
+			tx.commit();
+			return resultadoQuery;
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+			if (tx.isActive())
+            {
+                tx.rollback();
+            }
+            pm.close();
+			return -1;
+			
+		}
+	}
+	public long devolverProductosDeCarrito()
+	{
+		return 1;
+	}
+	private void cambiarCapacidadContenedor( long idContenedor, ProductoFisico producto, boolean sumar)
+	{
+		
+		try
+		{
+			int cantidadProducto = producto.getCantidadMedida();
+			Contenedor contenedor = sqlContenedor.darContenedorPorId(pmf.getPersistenceManager(), idContenedor);
+			int capacidadOcupada = sumar? contenedor.getCapacidadOcupada() + cantidadProducto : contenedor.getCapacidadOcupada() - cantidadProducto;
+			
+			if(capacidadOcupada < 0  || capacidadOcupada > contenedor.getCapacidad())
+				throw new Exception("No se puede cambiar la capacidad del contenedor");
+			sqlContenedor.cambiarCapacidadOcupada(pmf.getPersistenceManager(), capacidadOcupada, idContenedor);
+		}catch(Exception e)
+		{
+			log.error("Exception: " + e.getMessage() + "\n" + darDetalleException(e));
+		}
+	}
+	
+	private ProductoFisico darProductoFisicoPorId(long idProducto)
+	{
+		return sqlProductoFisico.darProductoFisicoPorId(pmf.getPersistenceManager(), idProducto);
 	}
 	
 	public void metodo(){

@@ -1,9 +1,7 @@
 package uniandes.isis2304.superAndes.negocio;
 
+import java.util.LinkedList;
 import java.util.List;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.Transaction;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +13,11 @@ public class SuperAndes {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
+	public final static String CLIENTE_PERSONA= "cliente persona";
+	public final static String CLIENTE_EMPRESA= "cliente empresa";
+	public final static String PROVEEDOR = "proveedor";
+	public final static String TRABAJADOR_SUCURSAL = "trabajador sucursal";
+	
 	/**
 	 * Logger para escribir la traza de la ejecución
 	 */
@@ -64,8 +67,6 @@ public class SuperAndes {
 	  * @return
 	  */
 	
-
-	
 	public Carrito agregarCarrito( long idUser)
 	{
 		log.info("Agregando Carrito: " + idUser);
@@ -102,10 +103,10 @@ public class SuperAndes {
 	 * @param capacidadOcupada
 	 * @return
 	 */
-	public Contenedor agregarContenedor( long sucursalId, String tipo, int capacidad, int capacidadOcupada)
+	public Contenedor agregarContenedor( long sucursalId, String tipo, int capacidad, int capacidadOcupada, String tipoProducto)
 	{
 		log.info("Agregando Contenedor:" );
-		Contenedor contenedor = psa.agregarContenedor(sucursalId, tipo, capacidad, capacidadOcupada);
+		Contenedor contenedor = psa.agregarContenedor(sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto);
 		log.info("Agregando Contenedor:");
 		return contenedor;
 		
@@ -125,15 +126,23 @@ public class SuperAndes {
 	 * @param tipoEmpresa
 	 * @return
 	 */
-	public Empresa agregarEmpresa( int nit, long idUser, String direccion, int puntosCompras, String tipoEmpresa )
+	public Empresa agregarEmpresa( int nit, String direccion, String password, String nombre, String correo, String tipoEmpresa )throws Exception
 	{
 		log.info("Agregando Empresa: " + nit);
+		System.out.println("Agregando en SuperAndes");
+		//Comienza Transacción
 		Empresa empresa = null;
+		VOUsuario usuario = agregarUsuario(password, nombre, correo, "empresa");
+		long idUsuario = usuario.getId();
+		System.out.println("Se agregó el usuario");
 		if(tipoEmpresa.equals(Empresa.PROVEEDOR))
-			empresa = psa.agregarProveedor( nit, idUser, direccion, tipoEmpresa);
+			empresa = psa.agregarProveedor( nit, idUsuario, direccion, tipoEmpresa);
+		else if(tipoEmpresa.equals(Empresa.CLIENTE))
+			empresa = psa.agregarEmpresaCliente( nit, idUsuario, direccion, tipoEmpresa);
 		else
-			empresa = psa.agregarEmpresaCliente( nit, idUser, direccion, puntosCompras, tipoEmpresa);
-		log.info("Agregando Empresa: " + empresa);
+			throw new Exception("El tipo de la empresa no es aceptado.");
+		//Termina Transacción
+		log.info("Agregando Empresa terminado: " + empresa);
 		return empresa;
 	}
 	
@@ -213,15 +222,20 @@ public class SuperAndes {
      * @param tipoPersona
      * @return
      */
-    public Persona agregarPersona(  int cedula, long idUser,  int puntos, long idSucursal, String tipoPersona)
+    public Persona agregarPersona(  int cedula, long idSucursal, String password, String nombre, String correo, String tipoPersona)throws Exception
     {
     	log.info("Agregando Persona: " + cedula);
+    	
+    	VOUsuario usuario = this.agregarUsuario(password, nombre, correo, "persona");
+    	//Comienza Transacción
+    	long idUsuario = usuario.getId();
     	Persona persona = null;
     	if(tipoPersona.equals(Persona.TIPO_CLIENTE))
-			persona = psa.agregarPersonaCliente( cedula, idUser, puntos, tipoPersona);
-		else
-			persona = psa.agregarTrabajadorSucursal(cedula, idUser, idSucursal, tipoPersona);
-    	
+			persona = psa.agregarPersonaCliente( cedula, idUsuario, tipoPersona);
+		else if(tipoPersona.equals(Persona.TIPO_TRABAJADOR_SUCURSAL))
+			persona = psa.agregarTrabajadorSucursal(cedula, idUsuario, idSucursal, tipoPersona);
+		else 
+			throw new Exception("El tipo de persona ingresado no es aceptado.");
 		log.info("Agregando Persona: " + persona);
 		return persona;
     }
@@ -337,12 +351,13 @@ public class SuperAndes {
 		return sucursal;
     }
     
-    public User agregarUser( String password, String nombre, String correo, String tipo)
+    public Usuario agregarUsuario( String password, String nombre, String correo, String tipo)
     {
+    	System.out.println("Agregando usuario.");
     	log.info("Agregando User: " + nombre);
-    	User user = psa.agregarUser(password, nombre, correo, tipo);
-		log.info("Agregando User: " + user);
-		return user;
+    	Usuario usuario = psa.agregarUser(password, nombre, correo, tipo);
+		log.info("Agregado User: " + usuario);
+		return usuario;
     }
     
     
@@ -350,16 +365,209 @@ public class SuperAndes {
 	
 	
 	
-	public List<Categoria> darCategorias()
+	public List<VOCategoria> darCategorias()
 	{
 		log.info("Consultando categorías.");
-		List<Categoria> categorias = psa.darCategorias();
-		log.info("Consultando categorías: " + categorias.size() + " existentes." );
+		List<VOCategoria> categorias = new LinkedList<VOCategoria>();
+		for(VOCategoria c: psa.darCategorias())
+		{
+			categorias.add(c);
+		}
+		log.info("Consultadas categorías: " + categorias.size() + " existentes." );
 		return categorias;
+	}
+	
+	public List<VOPersona> darPersonasPorTipoPersona(String tipo)
+	{
+		log.info ("Generando los VO de las personas de un tipo dado.");        
+        List<VOPersona> voPersonas = new LinkedList<VOPersona> ();
+        for (Persona p : psa.darPersonasPorTipoPersona(tipo) )
+        {
+        	voPersonas.add (p);
+        }
+        log.info ("Generados los VO de Tipos de bebida: " + voPersonas.size() + " existentes");
+        return voPersonas;
+	}
+	
+	public List<VOEmpresa> darEmpresasPorTipoEmpresa(String tipo)
+	{
+		System.out.println("en SuperAndes buscando proveedores.");
+		log.info ("Generando los VO de las enpresas de un tipo dado.");        
+        List<VOEmpresa> voEmpresas = new LinkedList<VOEmpresa> ();
+        System.out.println("En Superandes");
+        for (VOEmpresa p : psa.darEmpresasPorTipoEmpresa(tipo) )
+        {
+        	System.out.println("Empresa Actual: " + p.getIdUser() + ": " + p.getNit());
+        	voEmpresas.add (p);
+        }
+        log.info ("Generados los VO de las empresas de un tipo dado: " + voEmpresas.size() + " existentes");
+        return voEmpresas;
+	}
+	
+	public List<VOCiudad> darCiudades()
+	{
+		log.info ("Generando los VO de las ciudades");
+		List<VOCiudad> voCiudades = new LinkedList<VOCiudad>();
+		for(VOCiudad c : psa.darCiudades())
+		{
+			voCiudades.add(c);
+		}
+		log.info ("Generados los VO de las ciudades");
+		return voCiudades;
+	}
+	
+	public List<VOCarrito> darCarritos()
+	{
+		log.info ("Generando los VO de los carritos.");
+		List<VOCarrito> voCarritos = new LinkedList<VOCarrito>();
+		for(VOCarrito c: psa.darCarritos())
+		{
+			voCarritos.add(c);
+		}
+		log.info ("Generados los VO de los carritos.");
+		return voCarritos;
+	}
+	
+	public VOCarrito darCarritoPorUsuarioId(long usuarioId)
+	{
+		log.info ("Generando el VO del carrito");
+		VOCarrito carrito = (VOCarrito) psa.darCarritoPorUsuarioId(usuarioId);
+		//implementar los productos que tiene
+		log.info ("Generando el VO del carrito");
+		return carrito;
+	}
+	
+	public List<VOProductoFisico> darProductosPorCarritoId(long carritoId)
+	{
+		log.info ("Generando los VO de los ProductosFisicos");
+		List<VOProductoFisico> voProductos = new LinkedList<VOProductoFisico>();
+		for(VOProductoFisico p: psa.darProductosFisicosPorCarritoId(carritoId)){
+			voProductos.add(p);
+		}
+		log.info ("Generados el VO de los ProductosFisicos");
+		return voProductos;
+	}
+	
+	public long cambiarProductoACarrito(long productoFisicoId, long usuarioId)
+	{
+		VOCarrito carrito = darCarritoPorUsuarioId(usuarioId);
+		long carritoId = carrito.getId();
+		return psa.cambiarProductoACarrito(productoFisicoId, carritoId);
+	}
+	
+	public long cambiarProductoAContenedor(long productoFisicoId, long usuarioId)
+	{
+		return psa.cambiarProductoAContenedor(productoFisicoId, usuarioId);
+	}
+	
+	public long devolverCarrito(long usuarioId)
+	{
+		return psa.devolverCarrito(usuarioId);
+	}
+	
+	public long ordenarCarritos()
+	{
+		return 1;
+	}
+	
+	public List<VOContenedor> darContenedoresPorSucursalId(long sucursalId)
+	{
+		log.info ("Generando los VO de las contenedores de una sucursal dada.");
+		List<VOContenedor> voContenedores = new LinkedList<VOContenedor>();
+		for(VOContenedor c: psa.darContenedoresPorSucursalId(sucursalId))
+		{
+			voContenedores.add(c);
+		}
+		log.info ("Generados los VO de las contenedores de una sucursal dada.");
+		return voContenedores;
+	}
+	
+	//Falta implementar método en persistencia.
+	public List<Contenedor> darContenedoresPorIdSucursalYTipo()
+	{
+		log.info ("Generando los VO de las contenedores de una sucursal dada y tipo dado.");
+		List<VOContenedor> voContenedores = new LinkedList<VOContenedor>();
+		log.info ("Generando los VO de las contenedores de una sucursal dada y tipo dado.");
+		return null;
 	}
 	
 	
 	
+	public List<VOFactura> darFacturasPorIdUser(long idUser)
+	{
+		log.info ("Generando los VO de las facturas de un usuario dado");
+		List<VOFactura> voFacturas = new LinkedList<VOFactura>();
+		for(VOFactura f: psa.darFacturasPorIdUser(idUser))
+		{
+			voFacturas.add(f);
+		}
+		log.info ("Generados los VO de las las facturas de un usuario dado");
+		
+		return voFacturas;
+	}
+	
+	public List<VOOfrecidoProveedor> darOfrecidosProveedorPorNITProveedor(int nitProveedor)
+	{
+		log.info ("Generando los VO de los ofrecidos por un proveedor");
+		List<VOOfrecidoProveedor> voOfrecidosProveedor = new LinkedList<VOOfrecidoProveedor>();
+		for(VOOfrecidoProveedor o: psa.darOfrecidosProveedorPorNITProveedor(nitProveedor))
+		{
+			voOfrecidosProveedor.add(o);
+		}
+		log.info ("Generados los VO de los ofrecidos por un proveedor");
+		
+		return voOfrecidosProveedor;
+	}
+	
+	public List<VOSucursal> darSucursales()
+	{
+		log.info ("Generando los VO de las sucursales");
+		List<VOSucursal> voSucursales = new LinkedList<VOSucursal>();
+		for(VOSucursal s: psa.darSucursales())
+		{
+			voSucursales.add(s);
+		}
+		log.info ("Generados los VO de las sucursales");
+		return voSucursales;
+	}
+	
+	public List<VOOfrecidoSucursal> darOfrecidosSucursalPorSucursalId(long idSucursal)
+	{
+		log.info ("Generando los VO de los ofrecidos de una sucursal dada.");
+		List<VOOfrecidoSucursal> voOfrecidosSucursal = new LinkedList<VOOfrecidoSucursal>();
+		for(VOOfrecidoSucursal o: psa.darOfrecidosSucursalPorSucursalId(idSucursal))
+		{
+			voOfrecidosSucursal.add(o);
+		}
+		log.info ("Generados los VO de los ofrecidos de una sucursal dada.");
+		
+		return voOfrecidosSucursal;
+	}
+	
+	public List<VOProductoFisico> darProductosFisicosPorIdSucursal(long idSucursal)
+	{
+		log.info ("Generando los VO de las promociones de una sucursal dada.");
+		List<VOContenedor> contenedores = this.darContenedoresPorSucursalId(idSucursal);
+		List<VOProductoFisico> productos = new LinkedList<VOProductoFisico>();
+		for(VOContenedor c: contenedores)
+			for(VOProductoFisico p: psa.darProductosFisicosPorIdContenedor(c.getId()))
+				productos.add(p);
+		log.info ("Generados los VO de las promociones de una sucursal dada.");
+		return productos;
+	}
+	
+	public List<VOPromocion> darPromocionesPorSucursalId(long idSucursal)
+	{
+		log.info ("Generando los VO de las promociones de una sucursal dada.");
+		List<VOPromocion> voPromociones = new LinkedList<VOPromocion>();
+		for(VOPromocion p: psa.darPromocionesPorSucursalId(idSucursal))
+		{
+			voPromociones.add(p);
+		}
+		log.info ("Generados los VO de las promociones de una sucursal dada.");
+		
+		return voPromociones;
+	}
 	
 	public long[] limpiarSuperAndes()
 	{

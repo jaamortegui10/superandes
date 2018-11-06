@@ -13,8 +13,10 @@ public class Empresa implements VOEmpresa{
 	 ******************************************************/
 	private int nit;
 	private long idUser;
-	private String direccion;
-	private int puntosCompras;
+	private String dir;
+	private int puntos;
+	
+
 	private String tipoEmpresa;
 	
 	/* ****************************************************
@@ -26,12 +28,12 @@ public class Empresa implements VOEmpresa{
 	}
 
 
-	public Empresa(int nit, long idUser, String direccion, int puntosCompras, String tipoEmpresa) {
+	public Empresa(int nit, long idUser, String dir, int puntos, String tipoEmpresa) {
 		super();
 		this.nit = nit;
 		this.idUser = idUser;
-		this.direccion = direccion;
-		this.puntosCompras = puntosCompras;
+		this.dir = dir;
+		this.puntos = puntos;
 		this.tipoEmpresa = tipoEmpresa;
 	}
 
@@ -54,25 +56,14 @@ public class Empresa implements VOEmpresa{
 	public void setIdUser(long idUser) {
 		this.idUser = idUser;
 	}
-
-
-	public String getDireccion() {
-		return direccion;
+	
+	public int getPuntos() {
+		return puntos;
 	}
 
 
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
-	}
-
-
-	public int getPuntosCompras() {
-		return puntosCompras;
-	}
-
-
-	public void setPuntosCompras(int puntosCompras) {
-		this.puntosCompras = puntosCompras;
+	public void setPuntos(int puntos) {
+		this.puntos = puntos;
 	}
 
 
@@ -84,6 +75,14 @@ public class Empresa implements VOEmpresa{
 	public void setTipoEmpresa(String tipoEmpresa) {
 		this.tipoEmpresa = tipoEmpresa;
 	}
-	
+	public String getDir() {
+		return dir;
+	}
+
+
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
+
 	
 }

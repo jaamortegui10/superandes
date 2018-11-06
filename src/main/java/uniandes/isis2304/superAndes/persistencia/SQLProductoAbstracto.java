@@ -73,6 +73,20 @@ public class SQLProductoAbstracto {
 		return (ProductoAbstracto) q.executeUnique();
 	}
 	
+	public ProductoAbstracto darProductoPorIdProductoFisico(PersistenceManager pm, long productoFisicoId)
+	{
+		String sql = "Select pa.*"  
+				+ " From ProductoAbstracto pa Inner Join OfrecidoSucursal os"
+				+ " On pa.id = os.idAbstracto"
+				+ " Inner Join ProductoFisico pf"
+				+ " On os.id = pf.idOfrecido"
+				+ " Where pf.id = ?";
+		Query q = pm.newQuery(SQL, sql);
+		q.setResultClass(ProductoAbstracto.class);
+		q.setParameters(productoFisicoId);
+		return (ProductoAbstracto) q.executeUnique();
+	}
+	
 	/**
 	 * Elimina una tupla.
 	 * @param pm

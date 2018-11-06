@@ -39,10 +39,10 @@ public class SQLPersona {
 	 * @param tipoPersona
 	 * @return
 	 */
-	public long agregarCliente(PersistenceManager pm, int cedula, long idUser, int puntos, String tipoPersona)
+	public long agregarCliente(PersistenceManager pm, int cedula, long idUser, String tipoPersona)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPersona() + "(cedula, idUser, puntos, tipoPersona) values (?, ?, ?, ?)");
-		q.setParameters(cedula, idUser, puntos, tipoPersona);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPersona() + "(cedula, idUser, idSucursal, puntos, tipoPersona) values (?, ?, -1, 0, ?)");
+		q.setParameters(cedula, idUser, tipoPersona);
 		return (long) q.executeUnique();
 	}
 	
@@ -57,7 +57,7 @@ public class SQLPersona {
 	 */
 	public long agregarTrabajadorSucursal(PersistenceManager pm, int cedula, long idUser, long idSucursal, String tipoPersona)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPersona() + "(cedula, idUser, idSucursal, tipoPersona) values (?, ?, ?, ?)");
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPersona() + "(cedula, idUser, idSucursal, puntos, tipoPersona) values (?, ?, ?, -1, ?)");
 		q.setParameters(cedula, idUser, idSucursal, tipoPersona);
 		return (long) q.executeUnique();
 	}
