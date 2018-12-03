@@ -61,10 +61,10 @@ public class SQLCategoria {
 	 * @param manejo
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, String nombre, String caracteristicas, String almacenamiento, String manejo)
+	public long agregarTupla(PersistenceManager pm, String nombre, String caracteristicas, String manejo)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCategoria() + "(nombre, caracteristicas, almacenamiento, manejo) values (?, ?, ?, ?)");
-		q.setParameters(nombre, caracteristicas, almacenamiento, manejo);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCategoria() + "(nombre, caracteristicas, manejo) values (?, ?, ?)");
+		q.setParameters(nombre, caracteristicas, manejo);
 		return (long) q.executeUnique();
 	}
 

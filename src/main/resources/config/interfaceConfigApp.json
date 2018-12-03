@@ -9,24 +9,24 @@
 		"options":
 		[
 			{
-				"label":"Adicionar",
-				"event":"adicionarUsuario"
+				"label":"Adicionar Cliente",
+				"event":"adicionarCliente"
 			},
 			{
-				"label":"Listar Clientes Persona",
-				"event":"listarClientePersona"
+				"label":"Adicionar Proveedor",
+				"event":"adicionarProveedor"
 			},
 			{
-				"label":"Listar Trabajadores Sucursal",
-				"event":"listarTrabajadorSucursal"
-			},
-			{
-				"label":"Listar Clientes Empresa",
-				"event":"listarClienteEmpresa"
+				"label":"Listar Clientes",
+				"event":"listarCliente"
 			},
 			{
 				"label":"Listar Proveedores",
 				"event":"listarProveedor"
+			},
+			{
+				"label":"Listar Clientes Por Tipo",
+				"event":"listarClientePorTipo"
 			}
 		]
 		
@@ -205,6 +205,28 @@
 			{
 				"label":"Devolver Carrito",
 				"event":"devolverCarrito"
+			}
+		]
+	},
+	{
+		"menuTitle": "consultas",
+		"options":
+		[
+			{
+				"label": "Consumo 1",
+				"event": "consultarConsumo1"
+			},
+			{
+				"label": "Consumo 2",
+				"event": "consultarConsumo2"
+			},
+			{
+				"label":"Funcionamiento",
+				"event": "consultarFuncionamiento"
+			},
+			{
+				"label":"Buenos Clientes",
+				"event": "buenosClientes"
 			}
 		]
 	},

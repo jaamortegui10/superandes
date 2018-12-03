@@ -11,7 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.jdo.JDODataStoreException;
@@ -33,17 +34,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
+import uniandes.isis2304.superAndes.negocio.Cliente;
 import uniandes.isis2304.superAndes.negocio.SuperAndes;
 import uniandes.isis2304.superAndes.negocio.VOCarrito;
 import uniandes.isis2304.superAndes.negocio.VOCategoria;
 import uniandes.isis2304.superAndes.negocio.VOCiudad;
-import uniandes.isis2304.superAndes.negocio.VOEmpresa;
+import uniandes.isis2304.superAndes.negocio.VOCliente;
 import uniandes.isis2304.superAndes.negocio.VOOfrecidoProveedor;
 import uniandes.isis2304.superAndes.negocio.VOOfrecidoSucursal;
-import uniandes.isis2304.superAndes.negocio.VOPersona;
 import uniandes.isis2304.superAndes.negocio.VOProductoAbstracto;
 import uniandes.isis2304.superAndes.negocio.VOProductoFisico;
-import uniandes.isis2304.superAndes.negocio.VOPromocion;
+import uniandes.isis2304.superAndes.negocio.VOPromocionPaqueteProductos;
+import uniandes.isis2304.superAndes.negocio.VOPromocionPorCantidadOUnidades;
+import uniandes.isis2304.superAndes.negocio.VOPromocionPorcentajeDescuento;
+import uniandes.isis2304.superAndes.negocio.VOProveedor;
 import uniandes.isis2304.superAndes.negocio.VOSucursal;
 
 @SuppressWarnings("serial")
@@ -200,42 +204,56 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	/**
 	 * Método para adicionar un usuario.
 	 */
-	public void adicionarUsuario()
+	public void adicionarCliente()
+	{
+		String resultado = "" ;
+		try
+		{
+			
+			
+			int documento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el número de documento"));
+			String nombre = JOptionPane.showInputDialog("Ingrese su nombre.");
+			String password = JOptionPane.showInputDialog("Ingrese su password");
+			String dir = JOptionPane.showInputDialog("Introduzca la dirección");
+			String tipo = JOptionPane.showInputDialog("Ingrese el tipo de cliente: persona, empresa");
+			if(!(tipo.equals("persona") || tipo.equals("empresa")))
+				throw new Exception("El tipo ingresado no es válido.");
+			VOCliente agregado = superAndes.agregarCliente(documento, nombre, password, dir, tipo);
+			
+			
+				
+			resultado += "En agregar cliente"
+						+ "\nEmpresa adicionada exitosamente: " + agregado
+						+ "\n Operación terminada";
+			
+		}catch(Exception e)
+		{
+			resultado = generarMensajeError(e);
+			
+		}
+		panelDatos.actualizarPanel(resultado);
+	}
+	
+	/*
+	 * **************************************************************** CRUD de
+	 * CRUD de Empresa
+	 *****************************************************************/
+	
+	public void listarCliente()
 	{
 		try
 		{
-			String resultado = "" ;
+			long initTime, finTime, time;
 			
-			String nombre = JOptionPane.showInputDialog("Ingrese su nombre.");
-			String password = JOptionPane.showInputDialog("Ingrese su password");
-			String correo = JOptionPane.showInputDialog("Ingrese su correo.");
-			String tipo = JOptionPane.showInputDialog("Ingrese el tipo de usuario: persona, empresa");
-			
-			if(tipo.equals("persona"))
-			{
-				String tipoPersona = JOptionPane.showInputDialog("Intrese el tipo de persona: cliente, trabajador_sucursal");
-				int idSucursal = -1;
-				if(tipoPersona.equals("trabajador_sucursal"))
-					idSucursal = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el id de la sucursal del trabajador"));
-				int cedula = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cédula"));
-				VOPersona agregada = superAndes.agregarPersona(cedula, idSucursal, password, nombre, correo, tipoPersona);
-				resultado += "En agregar Persona"
-						+ "\nPersona adicionada exitosamente: " + agregada
-						+ "\n Operación terminada";
-			}
-			else if(tipo.equals("empresa"))
-			{
-				int nit = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nit de la empresa"));
-				String direccion = JOptionPane.showInputDialog("Ingrese la dirección");
-				String tipoEmpresa = JOptionPane.showInputDialog("Ingrese el tipo de empresa: proveedor, cliente");
-				System.out.println("------------>Interfaz antes de: ");
-				VOEmpresa agregada = superAndes.agregarEmpresa(nit, direccion, password, nombre, correo, tipoEmpresa);
-				resultado += "En agregar empresa"
-						+ "\nEmpresa adicionada exitosamente: " + agregada
-						+ "\n Operación terminada";
-			}//Aquí estaba agregando usuario, así que ese era el problema.
-			else
-				throw new Exception("El tipo ingresado no es válido.");
+			initTime = System.currentTimeMillis();
+			List<VOCliente> lista = superAndes.darClientes();
+			finTime = System.currentTimeMillis();
+			time = finTime - initTime;
+			System.out.println(lista != null? "En interfaz: tamaño lista: " + lista.size() + ( lista.size() > 0? ", Elemento 1: " + lista.get(0).getDocumento() : "Lista vacía: " )  : "Lista null");
+			String resultado = "En listar clientes \n \n";
+			resultado += "Tiempo en ms: " + time + "\n \n";
+			resultado += this.listarClientes(lista);
+			panelDatos.actualizarPanel(resultado);
 		}catch(Exception e)
 		{
 			String resultado = generarMensajeError(e);
@@ -243,15 +261,11 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 		}
 	}
 	
-	/*
-	 * **************************************************************** CRUD de
-	 * CRUD de Empresa
-	 *****************************************************************/
 	public void listarProveedor()
 	{
 		try
 		{
-			List<VOEmpresa> lista = superAndes.darEmpresasPorTipoEmpresa("proveedor");
+			List<VOProveedor> lista = superAndes.darProveedores();
 			System.out.println("Listando proveedor.");
 			String resultado = "En Listar Proveedor";
 			resultado += "\n" + listarProveedores(lista);
@@ -263,57 +277,9 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 			panelDatos.actualizarPanel(resultado);
 		}
 	}
-	
-	public void listarClienteEmpresa()
-	{
-		try
-		{
-			List<VOEmpresa> lista = superAndes.darEmpresasPorTipoEmpresa("cliente");
-			String resultado = "En Listar Cliente Empresa";
-			resultado += "\n" + listarClientesEmpresa(lista);
-			panelDatos.actualizarPanel(resultado);
-			
-		}catch(Exception e)
-		{
-			String resultado = generarMensajeError(e);
-			panelDatos.actualizarPanel(resultado);
-		}
-	}
+
 	
 	
-	/*
-	 * **************************************************************** CRUD de
-	 * CRUD Persona
-	 *****************************************************************/
-	public void listarTrabajadorSucursal()
-	{
-		try
-		{
-			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("empleado_sucursal");
-			String resultado = "En listar Trabajador Sucursal";
-			resultado += "\n" + listarTrabajadoresSucursales(lista);
-			panelDatos.actualizarPanel(resultado);
-		}catch(Exception e)
-		{
-			String resultado = generarMensajeError(e);
-			panelDatos.actualizarPanel(resultado);
-		}
-	}
-	
-	public void listarClientePersona()
-	{
-		try
-		{
-			List<VOPersona> lista = superAndes.darPersonasPorTipoPersona("cliente");
-			String resultado = "En listar Cliente Persona";
-			resultado += "\n" + listarClientesPersona(lista);
-			panelDatos.actualizarPanel(resultado);
-		}catch(Exception e)
-		{
-			String resultado = generarMensajeError(e);
-			panelDatos.actualizarPanel(resultado);
-		}
-	}
 	
 	/*
 	 * **************************************************************** CRUD de
@@ -362,7 +328,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 		String almacenamiento = JOptionPane.showInputDialog("Ingrese el tipo de almacenamiento");
 		String manejo = JOptionPane.showInputDialog("Ingrese el manejo que se le debe dar.");
 		
-		VOCategoria categoria = superAndes.agregarCategoria(nombre, caracteristicas, almacenamiento, manejo);
+		VOCategoria categoria = superAndes.agregarCategoria(nombre, caracteristicas, manejo);
 		String respuesta = "En adicionar categora"
 				+ "\n categoría: " + categoria;
 		panelDatos.actualizarPanel(respuesta);;
@@ -398,7 +364,8 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 			int nivelReorden = Integer.parseInt(JOptionPane.showInputDialog("Introduzca el nivel de reorden."));
 			int nivelReabastecimiento = Integer.parseInt(JOptionPane.showInputDialog("Introduzca el nivel de reabastecimiento"));
 			long idCiudad = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de la ciudad"));
-			VOSucursal sucursal = superAndes.agregarSucursal(nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad);
+			String password = JOptionPane.showInputDialog("Introduzca el password de la sucursal.");
+			VOSucursal sucursal = superAndes.agregarSucursal(nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad, password);
 			
 			String respuesta = "En Adicionar Sucursal";
 			respuesta += "\n"+ sucursal;
@@ -576,8 +543,9 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	{
 		try
 		{
-			long idUser = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de usuario"));
-			VOCarrito carrito = superAndes.agregarCarrito(idUser);
+			int doc = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el doc del cliente"));
+			long idSucursal = Long.parseLong(JOptionPane.showInputDialog("Ingrese el id de la sucursal"));
+			VOCarrito carrito = superAndes.agregarCarrito(doc, idSucursal);
 			String respuesta = "En Pedir Carrito";
 			respuesta += "\n" + carrito;
 			panelDatos.actualizarPanel(respuesta);
@@ -637,6 +605,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 		}
 	}
 	
+	/**
 	public void devolverProductoDeCarrito()
 	{
 		try
@@ -655,7 +624,9 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 			panelDatos.actualizarPanel(resultado);
 		}
 	}
+	*/
 	
+	/**
 	public void devolverCarrito()
 	{
 		try
@@ -671,6 +642,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 			panelDatos.actualizarPanel(resultado);
 		}
 	}
+	*/
 	/*
 	 * **************************************************************** CRUD de
 	 * tabla1
@@ -901,47 +873,47 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
 	 * 			Métodos privados para la presentación de resultados y otras operaciones
 	 *****************************************************************/
 	 
-    private String listarProveedores(List<VOEmpresa> proveedores)
+    private String listarProveedores(List<VOProveedor> proveedores)
     {
     	String respuesta = "";
-    	for(VOEmpresa empresaActual: proveedores)
+    	for(VOProveedor pActual: proveedores)
     		respuesta += "\n***********************" 
-    		+ "\n nit:"+empresaActual.getNit() 
-    		+ "\n idUser: " + empresaActual.getIdUser()
-    		+"\n tipo:" + empresaActual.getTipoEmpresa()
-    		+ "\n dir:: " + empresaActual.getDir();
+    		+ "\n nit:"+pActual.getNit() 
+    		+ "\n idUser: " + pActual.getNombre()
+    		+"\n tipo:" + pActual.getDir();
     	return respuesta;
     }
     
-    private String listarClientesEmpresa(List<VOEmpresa> clientes)
+    private String listarClientes(List<VOCliente> clientes)
     {
     	String respuesta = "";
-    	for(VOEmpresa empresaActual: clientes)
+    	for(VOCliente empresaActual: clientes)
     	{
     		respuesta += "\n***********************"
-    				+ "\n nit:" + empresaActual.getNit()
-    				+ "\n idUser: " + empresaActual.getIdUser()
-    				+ "\n tipo: " + empresaActual.getTipoEmpresa()
+    				+ "\n nit:" + empresaActual.getDocumento()
+    				+ "\n idUser: " + empresaActual.getNombre()
+    				+ "\n tipo: " + empresaActual.getTipo()
     				+ "\n puntos: " + empresaActual.getPuntos();
     	}
     	
     	return respuesta;
     }
     
-    private String listarClientesPersona(List<VOPersona> clientes)
+    private String listarClientesNoVo(List<Cliente> clientes)
     {
     	String respuesta = "";
-    	for(VOPersona personaActual: clientes)
+    	for(VOCliente empresaActual: clientes)
     	{
-    		respuesta += "\n**********************"
-    				+ "\n cedula: " + personaActual.getCedula()
-    				+ "\n idUser: " + personaActual.getIdUser()
-    				+ "\n puntosCompras: " + personaActual.getPuntos()
-    				+ "\n tipo: :" + personaActual.getTipoPersona();
+    		respuesta += "\n***********************"
+    				+ "\n nit:" + empresaActual.getDocumento()
+    				+ "\n idUser: " + empresaActual.getNombre()
+    				+ "\n tipo: " + empresaActual.getTipo()
+    				+ "\n puntos: " + empresaActual.getPuntos();
     	}
     	
     	return respuesta;
     }
+    
     
     private String listarCiudades(List<VOCiudad> ciudades)
     {
@@ -964,7 +936,6 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     	{
     		respuesta += "***********************"
         			+ "\n nombre: " + categoriaActual.getNombre() 
-        			+ "\n almacenamiento: " + categoriaActual.getAlmacenamiento()
         			+ "\n caracteristicas:" + categoriaActual.getCaracteristicas()
         			+ "\n " + categoriaActual.getManejo();
     	}    	
@@ -973,29 +944,49 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     
     
     
-    private String listarTrabajadoresSucursales(List<VOPersona> trabajadores)
-    {
-    	String respuesta = "";
-    	for(VOPersona trabajadorActual: trabajadores)
-    	{
-    		respuesta += "\n***********************"
-    				+ "\n cedula: " + trabajadorActual.getCedula()
-    				+ "\n idUser: " + trabajadorActual.getIdUser()
-    				+ "\n sucursalId: " + trabajadorActual.getIdSucursal()
-    				+ "\n tipoPersona: " + trabajadorActual.getTipoPersona();
-    	}
-    	return respuesta;
-    }
     
-    private String listarPromociones(List<VOPromocion> promociones)
+    private String listarPromocionesPaqueteProductos(List<VOPromocionPaqueteProductos> promociones)
     {
     	String respuesta = "";
-    	for(VOPromocion promocionActual: promociones)
+    	for(VOPromocionPaqueteProductos promocionActual: promociones)
     	{
     		respuesta += "\n*************************"
     				+ "\n id: " + promocionActual.getId()
     				+ "\n sucursalId: " + promocionActual.getIdSucursal()
-    				+ "\n descripción: " + promocionActual.getDescripcion();
+    				+ "\n descripción: " + promocionActual.getDescripcion()
+    				+ "\n producto 1: " + promocionActual.getIdProductoOfrecido1()
+    				+ "\n producto 2: " + promocionActual.getIdProductoOfrecido2();
+    	}
+    	
+    	return respuesta;
+    }
+    private String listarPromocionesPorcentajeDescuento(List<VOPromocionPorcentajeDescuento> promociones)
+    {
+    	String respuesta = "";
+    	for(VOPromocionPorcentajeDescuento promocionActual: promociones)
+    	{
+    		respuesta += "\n*************************"
+    				+ "\n id: " + promocionActual.getId()
+    				+ "\n sucursalId: " + promocionActual.getIdSucursal()
+    				+ "\n descripción: " + promocionActual.getDescripcion()
+    				+ "\n producto: " + promocionActual.getIdProductoOfrecido()
+    				+ "\n porcentaje descuento: " + promocionActual.getPorcentajeDescuento();
+    	}
+    	
+    	return respuesta;
+    }
+    private String listarPromocionesPorCantidadOUnidad(List<VOPromocionPorCantidadOUnidades> promociones)
+    {
+    	String respuesta = "";
+    	for(VOPromocionPorCantidadOUnidades promocionActual: promociones)
+    	{
+    		respuesta += "\n*************************"
+    				+ "\n id: " + promocionActual.getId()
+    				+ "\n sucursalId: " + promocionActual.getIdSucursal()
+    				+ "\n descripción: " + promocionActual.getDescripcion()
+    				+ "\n producto : " + promocionActual.getIdProductoOfrecido()
+    				+ "\n unidades pagadas: " + promocionActual.getCantidadOUnidadesPagadas()
+    				+ "\n uniades adquiridas: " + promocionActual.getCantidadOUnidadesCompradas();
     	}
     	
     	return respuesta;
@@ -1025,9 +1016,8 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     		respuesta += "\n******************************"
     				+ "\n id: " + prodAbstractoActual.getId()
     				+ "\n nombre: " + prodAbstractoActual.getNombre()
-    				+ "\n categoria: " + prodAbstractoActual.getCategoria()
     				+ "\n unidad Medida: " + prodAbstractoActual.getUnidadMedida()
-    				+ "\n tipo: " + prodAbstractoActual.getTipo();
+    				+ "\n tipo: " + prodAbstractoActual.getIdTipo();
     	}
     	
     	return respuesta;
@@ -1069,10 +1059,9 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     	{
     		respuesta += "\n********************"
     				+ "\n id:" + fisicoActual.getId()
-    				+ "\n id Ofrecido: " + fisicoActual.getIdOfrecido()
-    				+ "\n cantidad medida: " + fisicoActual.getCantidadMedida()
+    				+ "\n codigo barras: " + fisicoActual.getCodigoBarras()
     				+ "\n Código Barras: " + fisicoActual.getCodigoBarras()
-    				+ "\n id Contenedor: " + fisicoActual.getIdContenedor();
+    				+ "\n costo: " + fisicoActual.getPrecio();
     	}
     	
     	return respuesta;
@@ -1085,10 +1074,8 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     	{
     		respuesta += "\n********************"
     				+ "\n id:" + fisicoActual.getId()
-    				+ "\n id Ofrecido: " + fisicoActual.getIdOfrecido()
-    				+ "\n cantidad medida: " + fisicoActual.getCantidadMedida()
-    				+ "\n Código Barras: " + fisicoActual.getCodigoBarras()
-    				+ "\n id Carrito: " + fisicoActual.getIdCarrito();
+    				+ "\n código barras: " + fisicoActual.getCodigoBarras()
+    				+ "\n id tipo producto: " + fisicoActual.getIdTipo();
     	}
     	return respuesta;
     }
@@ -1100,7 +1087,7 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     	{
     		respuesta += "\n********************"
     				+ "\n id: " + carritoActual.getId()
-    				+ "\n id User: " + carritoActual.getIdUser();
+    				+ "\n id sucursal: " + carritoActual.getIdSucursal();
     	}
     	return respuesta;
     }
@@ -1110,15 +1097,15 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
     	String respuesta = "";
     	respuesta += "\n********************"
 				+ "\n id: " + carrito.getId()
-				+ "\n id User: " + carrito.getIdUser();
+				+ "\n id sucursal: " + carrito.getIdSucursal();
     	respuesta += "\n----"
     			+"\nproductos: ";
     	for(VOProductoFisico productoActual : productos)
     	{
     		respuesta += "\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
     				+ "\n id: " + productoActual.getId()
-    				+ "\n id Ofrecido: " + productoActual.getIdOfrecido()
-    				+ "\n Código Barras: " + productoActual.getCodigoBarras();
+    				+ "\n Código Barras: " + productoActual.getCodigoBarras()
+    				+ "\n precio: "  + productoActual.getPrecio();
     	}
     	return respuesta;
     }
@@ -1227,6 +1214,76 @@ public class InterfazSuperAndesApp extends JFrame implements ActionListener {
         {
             e.printStackTrace( );
         }
+	}
+	
+	
+	
+	/***********************************
+	 *Métodos de consulta iteración 3 
+	 ***********************************/
+	//Consultar Consumo 1
+	public void consultarConsumo1()
+	{
+		try
+		{
+			String criterio = JOptionPane.showInputDialog("Introduzca el criterio de orden");
+			String fecha_inicial_string = JOptionPane.showInputDialog("Introduzca la fecha inicial (MM-dd-yyyy)");
+			String fecha_final_string = JOptionPane.showInputDialog("Introduzca la fecha final (MM-dd-yyyy)");
+			long idAbstracto = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del producto Abstracto"));
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			Date fecha_inicial = sdf.parse(fecha_inicial_string);
+			Date fecha_final = sdf.parse(fecha_final_string);
+			
+			long initTime, finTime, time;
+			initTime = System.currentTimeMillis();
+			List<Cliente> lista = superAndes.consultarConsumo(criterio, fecha_inicial, fecha_final, idAbstracto);
+			finTime = System.currentTimeMillis();
+			time = finTime - initTime;
+			
+			String resultado = "OBtenidos usuarios que consumieron al menos una vez el producto dado por parámetro entre las fechas dadas.";
+			resultado += "Tiempo: " + time + "\n \n";
+			resultado += listarClientesNoVo(lista);
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+			System.out.println("*******************************");
+			e.printStackTrace();
+			
+		}
+	}
+	
+	public void consultarConsumo2()
+	{
+		try
+		{
+			String criterio = JOptionPane.showInputDialog("Introduzca el criterio de orden");
+			String fecha_inicial_string = JOptionPane.showInputDialog("Introduzca la fecha inicial (MM-dd-yyyy)");
+			String fecha_final_string = JOptionPane.showInputDialog("Introduzca la fecha final (MM-dd-yyyy)");
+			long idAbstracto = Long.parseLong(JOptionPane.showInputDialog("Introduzca el id del producto Abstracto"));
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			Date fecha_inicial = sdf.parse(fecha_inicial_string);
+			Date fecha_final = sdf.parse(fecha_final_string);
+			
+			long initTime, finTime, time;
+			initTime = System.currentTimeMillis();
+			List<VOCliente> lista = superAndes.consultarConsumo2(criterio, fecha_inicial, fecha_final, idAbstracto);
+			finTime = System.currentTimeMillis();
+			time = finTime - initTime;
+			System.out.println(lista != null? "En interfaz: tamaño lista: " + lista.size() + ( lista.size() > 0? ", Elemento 1: " + lista.get(0).getDocumento() : "Lista vacía: " )  : "Lista null");
+
+			String resultado = "OBtenidos usuarios que NO consumieron al menos una vez el producto dado por parámetro entre las fechas dadas.";
+			resultado += "Tiempo: " + time + "\n \n";
+			resultado += listarClientes(lista);
+			panelDatos.actualizarPanel(resultado);
+		}catch(Exception e)
+		{
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarPanel(resultado);
+		}
 	}
 
 }

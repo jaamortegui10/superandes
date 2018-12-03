@@ -7,37 +7,35 @@ public class Contenedor implements VOContenedor{
 	private String tipo;
 	private int capacidad;
 	private int capacidadOcupada;
-	private String tipoProducto;
+	private String categoria;
 	
 	public Contenedor()
 	{
 		
 	}
-
+	
 	
 
-	public Contenedor(long id, long idSucursal, String tipo, int capacidad, int capacidadOcupada, String tipoProducto) {
+	public Contenedor(long id, long idSucursal, String tipo, int capacidad, int capacidadOcupada, String categoria) {
 		super();
 		this.id = id;
 		this.idSucursal = idSucursal;
 		this.tipo = tipo;
 		this.capacidad = capacidad;
 		this.capacidadOcupada = capacidadOcupada;
-		this.tipoProducto = tipoProducto;
+		this.categoria = categoria;
+	}
+	
+	
+
+	public String getCategoria() {
+		return categoria;
 	}
 
 
 
-
-
-	public String getTipoProducto() {
-		return tipoProducto;
-	}
-
-
-
-	public void setTipoProducto(String tipoProducto) {
-		this.tipoProducto = tipoProducto;
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 
 

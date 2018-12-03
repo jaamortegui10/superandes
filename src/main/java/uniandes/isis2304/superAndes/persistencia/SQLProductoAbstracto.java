@@ -40,10 +40,10 @@ public class SQLProductoAbstracto {
 	 * @param categoria
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, String nombre, String tipo, String unidadMedida, String categoria)
+	public long agregarTupla(PersistenceManager pm, long id, String nombre, String unidadMedida, int cantidadMedida, long idTipo)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoAbstracto() + "(id, nombre, tipo, unidadMedida, categoria) values (?, ?, ?, ?, ?)");
-		q.setParameters(id, nombre, tipo, unidadMedida, categoria);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoAbstracto() + "(id, nombre, unidadMedida, cantidadMedida, idTipo) values (?, ?, ?, ?, ?)");
+		q.setParameters(id, nombre, unidadMedida, cantidadMedida, idTipo);
 		return (long) q.executeUnique();
 	}
 	
@@ -73,6 +73,7 @@ public class SQLProductoAbstracto {
 		return (ProductoAbstracto) q.executeUnique();
 	}
 	
+	/**
 	public ProductoAbstracto darProductoPorIdProductoFisico(PersistenceManager pm, long productoFisicoId)
 	{
 		String sql = "Select pa.*"  
@@ -86,6 +87,7 @@ public class SQLProductoAbstracto {
 		q.setParameters(productoFisicoId);
 		return (ProductoAbstracto) q.executeUnique();
 	}
+	*/
 	
 	/**
 	 * Elimina una tupla.

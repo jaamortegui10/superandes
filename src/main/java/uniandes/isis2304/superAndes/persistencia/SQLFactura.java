@@ -38,11 +38,11 @@ public class SQLFactura {
 	 * @param costoTotal
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, long idUser, double costoTotal)
+	public long agregarTupla(PersistenceManager pm, long id, long docCliente, long idSucursal, double costoTotal, String fecha)
 	{
 		
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaFactura() + "(id, idUser, costoTotal) values (?, ?, ?)");
-		q.setParameters(id, idUser, costoTotal);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaFactura() + "(id, docCliente, idSucursal, costoTotal, fecha) values (?, ?, ?, ?, ?)");
+		q.setParameters(id, docCliente,idSucursal, costoTotal, fecha);
 		return (long) q.executeUnique();
 	}
 	

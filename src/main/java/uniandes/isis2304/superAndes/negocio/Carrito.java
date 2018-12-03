@@ -3,17 +3,19 @@ package uniandes.isis2304.superAndes.negocio;
 public class Carrito implements VOCarrito{
 	
 	private long id;
-	private long idUser;
+	private long idSucursal;
+	private String ocupado;
 	
 	public Carrito()
 	{
 		
 	}
 
-	public Carrito(long id, long idUser) {
+	public Carrito(long id, long idSucursal, String ocupado) {
 		super();
 		this.id = id;
-		this.idUser = idUser;
+		this.idSucursal = idSucursal;
+		this.ocupado = ocupado;
 	}
 
 	public long getId() {
@@ -24,12 +26,20 @@ public class Carrito implements VOCarrito{
 		this.id = id;
 	}
 
-	public long getIdUser() {
-		return idUser;
+	public long getIdSucursal() {
+		return idSucursal;
 	}
 
-	public void setIdUser(int idUser) {
-		this.idUser = idUser;
+	public void setIdSucursal(long idSucursal) {
+		this.idSucursal = idSucursal;
+	}
+
+	public String getOcupado() {
+		return ocupado;
+	}
+
+	public void setOcupado(String ocupado) {
+		this.ocupado = ocupado;
 	}
 	
 	

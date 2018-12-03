@@ -6,5 +6,5 @@ public interface VOContenedor {
 	public String getTipo();
 	public int getCapacidad();
 	public int getCapacidadOcupada();
-	public String getTipoProducto();
+	public String getCategoria();
 }

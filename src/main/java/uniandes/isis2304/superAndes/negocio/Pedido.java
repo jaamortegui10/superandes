@@ -1,5 +1,7 @@
 package uniandes.isis2304.superAndes.negocio;
 
+import java.util.Date;
+
 public class Pedido implements VOPedido{
 	
 	public static final String ESTADO_POR_ENTREGAR = "por_entregar";
@@ -18,7 +20,7 @@ public class Pedido implements VOPedido{
 	private double precio;
 	private String estado;
 	
-	private String fechaEntrega;
+	private Date fechaEntrega;
 	private String calidad;
 	private int calificacion;
 	
@@ -26,7 +28,9 @@ public class Pedido implements VOPedido{
 	{
 		
 	}
-	public Pedido(long id, long idSucursal, int nitProveedor, double precio, String estado, String fechaEntrega, String calidad, int calificacion) {
+	
+	public Pedido(long id, long idSucursal, int nitProveedor, double precio, String estado, Date fechaEntrega,
+			String calidad, int calificacion) {
 		super();
 		this.id = id;
 		this.idSucursal = idSucursal;
@@ -40,6 +44,14 @@ public class Pedido implements VOPedido{
 	
 	
 	
+	public Date getFechaEntrega() {
+		return fechaEntrega;
+	}
+
+	public void setFechaEntrega(Date fechaEntrega) {
+		this.fechaEntrega = fechaEntrega;
+	}
+
 	public long getIdSucursal() {
 		return idSucursal;
 	}
@@ -75,12 +87,6 @@ public class Pedido implements VOPedido{
 	}
 	public void setEstado(String estado) {
 		this.estado = estado;
-	}
-	public String getFechaEntrega() {
-		return fechaEntrega;
-	}
-	public void setFechaEntrega(String fechaEntrega) {
-		this.fechaEntrega = fechaEntrega;
 	}
 	public String getCalidad() {
 		return calidad;

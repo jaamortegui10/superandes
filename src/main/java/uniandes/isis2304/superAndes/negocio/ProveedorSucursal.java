@@ -2,17 +2,17 @@ package uniandes.isis2304.superAndes.negocio;
 
 public class ProveedorSucursal implements VOProveedorSucursal{
 	private long idSucursal;
-	private long idProveedor;
+	private int nitProveedor;
 	
 	public ProveedorSucursal()
 	{
 		
 	}
 
-	public ProveedorSucursal(long idSucursal, long idProveedor) {
+	public ProveedorSucursal(long idSucursal, int nitProveedor) {
 		super();
 		this.idSucursal = idSucursal;
-		this.idProveedor = idProveedor;
+		this.nitProveedor = nitProveedor;
 	}
 
 	public long getIdSucursal() {
@@ -23,15 +23,13 @@ public class ProveedorSucursal implements VOProveedorSucursal{
 		this.idSucursal = idSucursal;
 	}
 
-	public long getIdProveedor() {
-		return idProveedor;
+	public int getNitProveedor() {
+		return nitProveedor;
 	}
 
-	public void setIdProveedor(long idProveedor) {
-		this.idProveedor = idProveedor;
+	public void setNitProveedor(int nitProveedor) {
+		this.nitProveedor = nitProveedor;
 	}
-	
-	
-	
+
 	
 }

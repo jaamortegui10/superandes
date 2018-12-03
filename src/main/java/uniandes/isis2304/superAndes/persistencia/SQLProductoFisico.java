@@ -13,6 +13,11 @@ public class SQLProductoFisico {
 	 *****************************************************************/
 	private final static String SQL = PersistenciaSuperAndes.SQL;
 	
+	public final static String ESTANTE = "estante";
+	public final static String BODEGA = "bodega";
+	public final static String CARRITO = "carrito";
+	public final static String FACTURA = "factura";
+	
 	/* ****************************************************************
 	 * 			Atributos
 	 *****************************************************************/
@@ -40,10 +45,10 @@ public class SQLProductoFisico {
 	 * @param idContenedor
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, long idOfrecido, int cantidadMedida, String codigoBarras, long idContenedor)
+	public long agregarTupla(PersistenceManager pm, long id, String codigoBarras, String estado, long idTipo, long idAbstracto, double precio)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoFisico() + "(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor) values (?, ?, ?, ?, ?)");
-		q.setParameters(id, idOfrecido, cantidadMedida, codigoBarras, idContenedor);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoFisico() + "(id, codigoBarras, estado, idTipo, idAbstracto, precio) values (?, ?, ?, ?, ?, ?)");
+		q.setParameters(id, codigoBarras, estado, idTipo, idAbstracto, precio);
 		return (long) q.executeUnique();
 	}
 	
@@ -54,32 +59,13 @@ public class SQLProductoFisico {
 	 * @param idContenedor
 	 * @return
 	 */
-	public long cambiarIdContenedor(PersistenceManager pm, long id, long idContenedor)
+	public long cambiarEstado(PersistenceManager pm, long id, String estado)
 	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + "set idContenedor = ? WHERE id = ?");
-		q.setParameters(idContenedor, id);
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " SET estado = ? WHERE id = ?");
+		q.setParameters(estado, id);
 		return (long) q.executeUnique();
 	}
 	
-	/**
-	 * Método para transformar en una tupla su idContenedor = null y el idCarrito al dado por parámetro.
-	 * @param pm
-	 * @param id
-	 * @param idCarrito
-	 * @return
-	 */
-	public long cambiardeIdContenedorAIdCarrito(PersistenceManager pm, long id, long idCarrito)
-	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " set idContenedor = null, idCarrito = ? WHERE id = ?");
-		q.setParameters(idCarrito, id);
-		return (long) q.executeUnique();
-	}
-	public long cambiardeIdCarritoAIdContenedor(PersistenceManager pm, long id, long idContenedor)
-	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " set idContenedor = ?, idCarrito = -1 WHERE id = ?");
-		q.setParameters(idContenedor, id);
-		return (long) q.executeUnique();
-	}
 	/**
 	 * Retorna todas las tuplas con el idContenedor dado por parámetro.
 	 * @param pm
@@ -103,21 +89,22 @@ public class SQLProductoFisico {
 		return (ProductoFisico) q.executeUnique();
 	}
 	
-	
+	/**
+	 * Método que retorna todos los productos pertenecientes a un carrito.
+	 * @param pm
+	 * @param carritoId
+	 * @return
+	 */
 	public List<ProductoFisico> darProductosPorCarritoId(PersistenceManager pm, long carritoId)
 	{
+		String sql = "SELECT * FROM " + psa.darTablaProductoFisico() + " pf"
+				+ " INNER JOIN " + psa.darTablaProductoCarrito() + " pc"
+				+ " ON pf.id = pc.idProductoFisico"
+				+ " WHERE pc.idCarrito = ?";
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFisico() + " WHERE idCarrito = ?");
 		q.setResultClass(ProductoFisico.class);
 		q.setParameters(carritoId);
 		return (List<ProductoFisico>) q.executeList();
-	}
-	
-	public long cambiarProductoACarrito(PersistenceManager pm, long productoFisicoId, long carritoId)
-	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaProductoFisico() + " SET idCarrito = ?, idContenedor = -1 WHERE id = ?");
-		q.setResultClass(ProductoFisico.class);
-		q.setParameters(carritoId, productoFisicoId);
-		return (long) q.executeUnique();
 	}
 	
 	public List<ProductoFisico> darProductosDeCarritosAbandonadosPorSucursalId(PersistenceManager pm, long idSucursal)

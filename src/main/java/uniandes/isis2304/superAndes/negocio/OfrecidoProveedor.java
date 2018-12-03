@@ -2,11 +2,9 @@ package uniandes.isis2304.superAndes.negocio;
 
 public class OfrecidoProveedor implements VOOfrecidoProveedor{
 	private long id;
-	
-
 	private long idAbstracto;
-	private double precio;
 	private int nitProveedor;
+	private double precio;
 	
 	public OfrecidoProveedor()
 	{

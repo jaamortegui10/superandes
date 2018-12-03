@@ -5,9 +5,9 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import uniandes.isis2304.superAndes.negocio.ItemFactura;
+import uniandes.isis2304.superAndes.negocio.ProductoFactura;
 
-public class SQLItemFactura {
+public class SQLProductoFactura {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
@@ -25,25 +25,25 @@ public class SQLItemFactura {
 	 * Método constructor de la clase.
 	 * @param psa
 	 */
-	public SQLItemFactura(PersistenciaSuperAndes psa)
+	public SQLProductoFactura(PersistenciaSuperAndes psa)
 	{
 		this.psa = psa;
 	}
 	
-	public long agregarTupla(PersistenceManager pm, long idFactura, long idProductoOfrecido, int cantidad, double costo)
+	public long agregarTupla(PersistenceManager pm, long idFactura, long idProductoFisico)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaItemFactura() + "(idFactura, idProductoOfrecido, cantidad, costo) values (?, ?, ?, ?)");
-		q.setParameters(idFactura, idProductoOfrecido, cantidad, costo);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProductoFactura() + "(idFactura, idProductoFisico) values (?, ?)");
+		q.setParameters(idFactura, idProductoFisico);
 		
 		return (long) q.executeUnique();
 	}
 	
-	public List<ItemFactura> darItemsFacturaPorIdFactura(PersistenceManager pm, long idFactura)
+	public List<ProductoFactura> darProductosPorIdFactura(PersistenceManager pm, long idFactura)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaItemFactura() + "WHERE idFactura = ?");
-		q.setResultClass(ItemFactura.class);
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProductoFactura() + "WHERE idFactura = ?");
+		q.setResultClass(ProductoFactura.class);
 		q.setParameters(idFactura);
-		return (List<ItemFactura>) q.executeList();
+		return (List<ProductoFactura>) q.executeList();
 	}
 	
 	

@@ -1,5 +1,6 @@
 package uniandes.isis2304.superAndes.negocio;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,10 +14,10 @@ public class SuperAndes {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
-	public final static String CLIENTE_PERSONA= "cliente persona";
-	public final static String CLIENTE_EMPRESA= "cliente empresa";
-	public final static String PROVEEDOR = "proveedor";
-	public final static String TRABAJADOR_SUCURSAL = "trabajador sucursal";
+	public final static String PROM_POR_CANTIDAD_O_UNIDAD = "por_cantidad_o_unidad";
+	public final static String PROM_PORCENTAJE_DESCUENTO = "porcentaje_descuento";
+	public final static String PROM_PAQUETE_PRODUCTOS = "paquete_productos";
+	public final static String PROM_NINGUNA = "ninguna";
 	
 	/**
 	 * Logger para escribir la traza de la ejecución
@@ -67,18 +68,18 @@ public class SuperAndes {
 	  * @return
 	  */
 	
-	public Carrito agregarCarrito( long idUser)
+	public Carrito agregarCarrito( long docCliente, long idSucursal)
 	{
-		log.info("Agregando Carrito: " + idUser);
-		Carrito carrito = psa.agregarCarrito(idUser);
+		log.info("Agregando Carrito: " + docCliente + ", " + idSucursal);
+		Carrito carrito = psa.agregarCarrito(docCliente, idSucursal);
 		log.info("Agregando Carrito:" + carrito);
 		return carrito;
 	}
 	
-	public Categoria agregarCategoria(String nombre, String caracteristicas, String almacenamiento, String manejo)
+	public Categoria agregarCategoria(String nombre, String caracteristicas, String manejo)
 	{
 		log.info("Agregando Categoria:" + nombre);
-		Categoria categoria = psa.agregarCategoria(nombre, caracteristicas, almacenamiento, manejo);
+		Categoria categoria = psa.agregarCategoria(nombre, caracteristicas, manejo);
 		log.info("Agregando Categoria:" + categoria);
 		return categoria;
 	}
@@ -126,41 +127,29 @@ public class SuperAndes {
 	 * @param tipoEmpresa
 	 * @return
 	 */
-	public Empresa agregarEmpresa( int nit, String direccion, String password, String nombre, String correo, String tipoEmpresa )throws Exception
+	public Cliente agregarCliente( int doc, String nombre, String password, String dir, String tipo )throws Exception
 	{
-		log.info("Agregando Empresa: " + nit);
+		log.info("Agregando Empresa: " + doc);
 		System.out.println("Agregando en SuperAndes");
 		//Comienza Transacción
-		Empresa empresa = null;
-		VOUsuario usuario = agregarUsuario(password, nombre, correo, "empresa");
-		long idUsuario = usuario.getId();
-		System.out.println("Se agregó el usuario");
-		if(tipoEmpresa.equals(Empresa.PROVEEDOR))
-			empresa = psa.agregarProveedor( nit, idUsuario, direccion, tipoEmpresa);
-		else if(tipoEmpresa.equals(Empresa.CLIENTE))
-			empresa = psa.agregarEmpresaCliente( nit, idUsuario, direccion, tipoEmpresa);
-		else
-			throw new Exception("El tipo de la empresa no es aceptado.");
+		Cliente empresa = null;
+		VOCliente cliente = psa.agregarCliente(doc, nombre, password, dir, tipo);
+		int docCliente = cliente.getDocumento();
+		System.out.println("Se agregó el cliente");
+		
 		//Termina Transacción
 		log.info("Agregando Empresa terminado: " + empresa);
 		return empresa;
 	}
 	
-	public Factura agregarFactura( long idUser, double costoTotal)
+	public Factura agregarFactura( int docCliente, long idSucursal, double costoTotal)
 	{
-		log.info("Agregando Factura: " + idUser);
-		Factura factura = psa.agregarFactura(idUser, costoTotal);
+		log.info("Agregando Factura: " + docCliente);
+		Date fecha = new Date();
+		Factura factura = psa.agregarFactura(docCliente, idSucursal, costoTotal, fecha);
 		log.info("Agregando Factura: " + factura);
 		return factura;
 	}
-	
-    public ItemFactura agregarItemFactura(  long idFactura, long idProductoOfrecido, int cantidad, double costo)
-    {
-    	log.info("Agregando ItemFactura: " + idFactura);
-    	ItemFactura itemFactura = psa.agregarItemFactura(idFactura, idProductoOfrecido, cantidad, costo);
-		log.info("Agregando : " + itemFactura);
-		return itemFactura;
-    }
     
     
     /*******************
@@ -201,7 +190,7 @@ public class SuperAndes {
     
    
     
-    public Pedido agregarPedido(  long idSucursal, int nitProveedor, double precio, String fechaEntrega)
+    public Pedido agregarPedido(  long idSucursal, int nitProveedor, double precio, Date fechaEntrega)
     {
     	log.info("Agregando Pedido: " + idSucursal + "," + nitProveedor);
     	Pedido pedido = psa.agregarPedido(idSucursal, nitProveedor, precio, fechaEntrega);
@@ -210,35 +199,6 @@ public class SuperAndes {
     }
     
     
-    /*******************
-	 * RF3
-	 *******************/
-    /**
-     * Se agrega una nueva persona.
-     * @param cedula
-     * @param idUser
-     * @param puntos
-     * @param idSucursal
-     * @param tipoPersona
-     * @return
-     */
-    public Persona agregarPersona(  int cedula, long idSucursal, String password, String nombre, String correo, String tipoPersona)throws Exception
-    {
-    	log.info("Agregando Persona: " + cedula);
-    	
-    	VOUsuario usuario = this.agregarUsuario(password, nombre, correo, "persona");
-    	//Comienza Transacción
-    	long idUsuario = usuario.getId();
-    	Persona persona = null;
-    	if(tipoPersona.equals(Persona.TIPO_CLIENTE))
-			persona = psa.agregarPersonaCliente( cedula, idUsuario, tipoPersona);
-		else if(tipoPersona.equals(Persona.TIPO_TRABAJADOR_SUCURSAL))
-			persona = psa.agregarTrabajadorSucursal(cedula, idUsuario, idSucursal, tipoPersona);
-		else 
-			throw new Exception("El tipo de persona ingresado no es aceptado.");
-		log.info("Agregando Persona: " + persona);
-		return persona;
-    }
     
     
     /*******************
@@ -253,10 +213,10 @@ public class SuperAndes {
      * @param categoria
      * @return
      */
-    public ProductoAbstracto agregarProductoAbstracto( String nombre, String tipo, String unidadMedida, String categoria)
+    public ProductoAbstracto agregarProductoAbstracto( String nombre, String unidadMedida, int cantidadMedida, long idTipo)
     {
     	log.info("Agregando ProductoAbstracto: " + nombre);
-    	ProductoAbstracto productoAbstracto = psa.agregarProductoAbstracto(nombre, tipo, unidadMedida, categoria);
+    	ProductoAbstracto productoAbstracto = psa.agregarProductoAbstracto(nombre, unidadMedida, cantidadMedida, idTipo);
 		log.info("Agregando ProductoAbstracto: " + productoAbstracto); 
 		return productoAbstracto;
     }
@@ -265,21 +225,7 @@ public class SuperAndes {
 	 * RF2.3
 	 *******************/
     
-    /**
-     * 
-     * @param idOfrecido
-     * @param cantidadMedida
-     * @param codigoBarras
-     * @param idContenedor
-     * @return
-     */
-    public ProductoFisico agregarProductoFisico( long idOfrecido, int cantidadMedida, String codigoBarras, long idContenedor)
-    {
-    	log.info("Agregando ProductoFisico: " + idOfrecido + "," + cantidadMedida);
-    	ProductoFisico productoFisico = psa.agregarProductoFisico(idOfrecido, cantidadMedida, codigoBarras, idContenedor);
-		log.info("Agregando ProductoFisico: " + productoFisico);
-		return productoFisico;
-    }
+   
     
     public ProductoPedido agregarProductoPedido(  long idPedido, long idProductoOfrecido, int cantidad)
     {
@@ -289,34 +235,26 @@ public class SuperAndes {
 		return productoPedido;
     }
     
-    public Promocion agregarPromocion( long idSucursal, String descripcion, String tipo)
+    public PromocionPaqueteProductos agregarPromocionPaqueteProductos(  double precio, long idProductoOfrecido1, long idProductoOfrecido2, long idSucursal, Date fecha_inicio, Date fecha_fin, String descripcion)
     {
-    	log.info("Agregando Promocion: " + idSucursal + "," + tipo);
-    	Promocion promocion = psa.agregarPromocion(idSucursal, descripcion, tipo);
-		log.info("Agregando Promocion: " + promocion);
-		return promocion;
-    }
-    
-    public PromocionPaqueteProductos agregarPromocionPaqueteProductos(  long idPromocion, double precio, long idProductoOfrecido1, long idProductoOfrecido2)
-    {
-    	log.info("Agregando PromocionPaqueteProductos: " + idPromocion);
-    	PromocionPaqueteProductos promocionPaqueteProductos = psa.agregarPromocionPaqueteProductos(idPromocion, precio, idProductoOfrecido1, idProductoOfrecido2);
+    	log.info("Agregando PromocionPaqueteProductos: " + idProductoOfrecido1 + ", " + idProductoOfrecido2 );
+    	PromocionPaqueteProductos promocionPaqueteProductos = psa.agregarPromPaqueteProductos(precio, idProductoOfrecido1, idProductoOfrecido2, idSucursal, fecha_inicio, fecha_fin, descripcion);
 		log.info("Agregando PromocionPaqueteProductos: " + promocionPaqueteProductos);
 		return promocionPaqueteProductos;
     }
     
-    public PromocionPorCantidadOUnidad  agregarPromocionPorCantidadOUnidad(  long idOfrecido, long idPromocion, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas)
+    public PromocionPorCantidadOUnidad  agregarPromocionPorCantidadOUnidad(  long idOfrecido, int cantidadOUnidadesPagadas, int cantidadOUnidadesCompradas, long idSucursal, Date fecha_inicio, Date fecha_fin, String descripcion)
     {
-    	log.info("Agregando PromocionPorCantidadOUnidad: " + idPromocion + "," + idOfrecido);
-    	PromocionPorCantidadOUnidad promocionPorCantidadOUnidad = psa.agregarPromocionPorCantidadOUnidad(idOfrecido, idPromocion, cantidadOUnidadesPagadas, cantidadOUnidadesCompradas);
+    	log.info("Agregando PromocionPorCantidadOUnidad: " + idOfrecido + "," + cantidadOUnidadesPagadas + "," + cantidadOUnidadesCompradas);
+    	PromocionPorCantidadOUnidad promocionPorCantidadOUnidad = psa.agregarPromPorCantidadOUnidad(idOfrecido, cantidadOUnidadesPagadas, cantidadOUnidadesCompradas, idSucursal, fecha_inicio, fecha_fin, descripcion);
 		log.info("Agregando PromocionPorCantidadOUnidad: " + promocionPorCantidadOUnidad);
 		return promocionPorCantidadOUnidad;
     }
     
-    public PromocionPorcentajeDescuento agregarPromocionPorcentajeDescuento(  long idProductoOfrecido, long idPromocion, int porcentajeDescuento)
+    public PromocionPorcentajeDescuento agregarPromocionPorcentajeDescuento(  long idProductoOfrecido, int porcentajeDescuento, long idSucursal, Date fecha_inicio, Date fecha_fin, String descripcion)
     {
-    	log.info("Agregando PromocionPorcentajeDescuento: " + idPromocion + "," + idProductoOfrecido);
-    	PromocionPorcentajeDescuento promocionPorcentajeDescuento = psa.agregarPromocionPorcentajeDescuento(idProductoOfrecido, idPromocion, porcentajeDescuento);
+    	log.info("Agregando PromocionPorcentajeDescuento: " + idProductoOfrecido + "," + porcentajeDescuento);
+    	PromocionPorcentajeDescuento promocionPorcentajeDescuento = psa.agregarPromPorcentajeDescuento(idProductoOfrecido, porcentajeDescuento, idSucursal, fecha_inicio, fecha_fin, descripcion);
 		log.info("Agregando PromocionPorcentajeDescuento: " + promocionPorcentajeDescuento);
 		return promocionPorcentajeDescuento;
     }
@@ -343,27 +281,13 @@ public class SuperAndes {
      * @param idCiudad
      * @return
      */
-    public Sucursal agregarSucursal( String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad)
+    public Sucursal agregarSucursal( String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad, String password)
     {
     	log.info("Agregando Sucursal: " + nombre);
-    	Sucursal sucursal = psa.agregarSucursal(nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad);
+    	Sucursal sucursal = psa.agregarSucursal(nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad, password);
 		log.info("Agregando Sucursal: " + sucursal);
 		return sucursal;
-    }
-    
-    public Usuario agregarUsuario( String password, String nombre, String correo, String tipo)
-    {
-    	System.out.println("Agregando usuario.");
-    	log.info("Agregando User: " + nombre);
-    	Usuario usuario = psa.agregarUser(password, nombre, correo, tipo);
-		log.info("Agregado User: " + usuario);
-		return usuario;
-    }
-    
-    
-	
-	
-	
+    }	
 	
 	public List<VOCategoria> darCategorias()
 	{
@@ -377,27 +301,36 @@ public class SuperAndes {
 		return categorias;
 	}
 	
-	public List<VOPersona> darPersonasPorTipoPersona(String tipo)
+	public List<VOCliente> darClientesPorTipoCliente(String tipo)
 	{
 		log.info ("Generando los VO de las personas de un tipo dado.");        
-        List<VOPersona> voPersonas = new LinkedList<VOPersona> ();
-        for (VOPersona p : psa.darPersonasPorTipoPersona(tipo) )
+        List<VOCliente> voClientes = new LinkedList<VOCliente> ();
+        for (VOCliente c : psa.darClientesPorTipo(tipo))
         {
-        	voPersonas.add (p);
+        	voClientes.add (c);
         }
-        log.info ("Generados los VO de Tipos de bebida: " + voPersonas.size() + " existentes");
-        return voPersonas;
+        log.info ("Generados los VO de Tipos de bebida: " + voClientes.size() + " existentes");
+        return voClientes;
 	}
 	
-	public List<VOEmpresa> darEmpresasPorTipoEmpresa(String tipo)
+	public List<VOCliente> darClientes()
+	{
+		List<VOCliente> voClientes = new LinkedList<VOCliente>();
+		for(VOCliente c: psa.darClientes())
+			voClientes.add(c);
+		return voClientes;
+			
+	}
+	
+	public List<VOProveedor> darProveedores()
 	{
 		System.out.println("en SuperAndes buscando proveedores.");
 		log.info ("Generando los VO de las enpresas de un tipo dado.");        
-        List<VOEmpresa> voEmpresas = new LinkedList<VOEmpresa> ();
+        List<VOProveedor> voEmpresas = new LinkedList<VOProveedor> ();
         System.out.println("En Superandes");
-        for (VOEmpresa p : psa.darEmpresasPorTipoEmpresa(tipo) )
+        for (VOProveedor p : psa.darProveedores() )
         {
-        	System.out.println("Empresa Actual: " + p.getIdUser() + ": " + p.getNit());
+        	System.out.println("Empresa Actual: " + p.getNit() + ": " + p.getNit());
         	voEmpresas.add (p);
         }
         log.info ("Generados los VO de las empresas de un tipo dado: " + voEmpresas.size() + " existentes");
@@ -453,16 +386,6 @@ public class SuperAndes {
 		VOCarrito carrito = darCarritoPorUsuarioId(usuarioId);
 		long carritoId = carrito.getId();
 		return psa.cambiarProductoACarrito(productoFisicoId, carritoId);
-	}
-	
-	public long cambiarProductoAContenedor(long productoFisicoId, long usuarioId)
-	{
-		return psa.cambiarProductoAContenedor(productoFisicoId, usuarioId);
-	}
-	
-	public long devolverCarrito(long usuarioId)
-	{
-		return psa.devolverCarrito(usuarioId);
 	}
 	
 	public long ordenarCarritos()
@@ -549,6 +472,7 @@ public class SuperAndes {
 		return productos;
 	}
 	
+	/**
 	public List<VOPromocion> darPromocionesPorSucursalId(long idSucursal)
 	{
 		log.info ("Generando los VO de las promociones de una sucursal dada.");
@@ -561,6 +485,7 @@ public class SuperAndes {
 		
 		return voPromociones;
 	}
+	*/
 	
 	public long[] limpiarSuperAndes()
 	{
@@ -570,4 +495,28 @@ public class SuperAndes {
 	     return borrrados;
 	}
 	
+	
+	
+	
+	/***************************************************
+	 * Requerimientos Funcionales de Consulta
+	 ***************************************************/
+	public List<Cliente> consultarConsumo(String criterio, Date fecha_inicial, Date fecha_final, long idAbstracto)
+	{
+		
+		return  psa.consultarConsumo(criterio, fecha_inicial, fecha_final, idAbstracto);
+	}
+	
+	public List<VOCliente> consultarConsumo2(String criterio, Date fecha_inicial, Date fecha_final, long idAbstracto)
+	{
+		List<Cliente> clientes = psa.consultarConsumo2(criterio, fecha_inicial, fecha_final, idAbstracto);
+		System.out.println(clientes != null? "En Logica: tamaño lista: " + clientes.size() + ( clientes.size() > 0? ", Elemento 1: " + clientes.get(0).getDocumento() : "Lista vacía: " )  : "Lista null");
+
+		List<VOCliente> voClientes = new LinkedList<VOCliente>();
+		
+		for(VOCliente c: psa.consultarConsumo2(criterio, fecha_inicial, fecha_final, idAbstracto))
+			voClientes.add(c);
+		return voClientes;
+	}
+
 }

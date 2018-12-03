@@ -4,5 +4,7 @@ public interface VOCarrito {
 	
 	public long getId();
 	
-	public long getIdUser();
+	public long getIdSucursal();
+	
+	public String getOcupado();
 }

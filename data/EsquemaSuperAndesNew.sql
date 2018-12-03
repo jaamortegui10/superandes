@@ -1,0 +1,351 @@
+--- Sentencias SQL para la creación del esquema de parranderos
+
+--Uso:
+--Copie el contenido de este archivo y péguelo en una pestaña SQL de SQLDeveloper
+--Ejecútelo como un script con el botón correspondiente
+
+--Creación del secuenciador.
+CREATE sequence SuperAndes_sequence;
+--Creación de la tabla Cliente
+CREATE TABLE Cliente(documento Number, nombre varchar(40), password 
+varchar(25), dir varchar(30), tipo varchar(7), puntos Number,
+CONSTRAINT Cliente_PK PRIMARY KEY  (documento) );
+
+Alter Table Cliente
+Add Constraint cliente_ck_tipo
+Check (tipo in ('persona', 'empresa'))
+Enable;
+
+Alter Table Cliente
+Add Constraint cliente_ck_puntos
+Check (puntos >= 0)
+Enable;
+
+--Creación de la tabla Proveedor
+Create Table Proveedor(nit Number, nombre varchar(40), password varchar(25), dir varchar(30),
+Constraint Proveedor_PK Primary Key (nit) );
+
+
+--Creación de la tabla Ciudad
+CREATE TABLE CIUDAD(id Number, nombre varchar(30),
+CONSTRAINT CIUDAD_PK PRIMARY KEY (id));
+
+--Creación de la tabla Sucursales
+CREATE TABLE SUCURSAL (id Number, nombre varchar (30), tamanho Number, direccion varchar(30), nivelReorden Number, nivelReabastecimiento Number, idCiudad Number, password varchar (30),
+CONSTRAINT SUCURSAL_PK PRIMARY KEY (id));
+
+ALTER TABLE SUCURSAL 
+ADD CONSTRAINT SUCURSAL_FK_idCiudad 
+FOREIGN KEY (idCiudad)
+REFERENCES CIUDAD
+ENABLE;
+
+--Creación de la tabla ProveedoresSucursales
+CREATE TABLE PROVEEDORSUCURSAL(idSucursal Number, nitProveedor Number,
+CONSTRAINT PROVEEDORSUCURSAL_PK PRIMARY KEY (idSucursal, NITProveedor));
+
+ALTER TABLE PROVEEDORSUCURSAL
+ADD CONSTRAINT PROVSUC_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES SUCURSAL
+ENABLE;
+
+ALTER TABLE PROVEEDORSUCURSAL
+ADD CONSTRAINT PROVSUC_FK_NITProveedor
+FOREIGN KEY (NITProveedor)
+REFERENCES PROVEEDOR
+ENABLE;
+
+--Creación de la tabla A_CATEGORIA
+
+CREATE TABLE CATEGORIA(nombre varchar(30), caracteristicas varchar(100), manejo varchar(40),
+CONSTRAINT CATEGORIA_PK PRIMARY KEY (nombre));
+--Creación de la tabla A_CONTENEDOR
+
+CREATE TABLE CONTENEDOR(id Number, idSucursal Number, tipo varchar(20), capacidad Number, capacidadOcupada Number, categoria varchar(30),
+CONSTRAINT CONTENEDOR_PK PRIMARY KEY (id));
+
+ALTER TABLE CONTENEDOR
+ADD CONSTRAINT CONTENEDOR_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES SUCURSAL
+ENABLE;
+
+ALTER TABLE CONTENEDOR
+ADD CONSTRAINT CONTENEDOR_FK_categoria
+FOREIGN KEY (categoria)
+REFERENCES CATEGORIA
+ENABLE;
+
+ALTER TABLE CONTENEDOR
+ADD CONSTRAINT CONTENEDOR_tipo
+CHECK (tipo IN ('estante', 'bodega'))
+ENABLE;
+
+ALTER TABLE CONTENEDOR
+ADD CONSTRAINT CONTENEDOR_cap_vs_Ocup
+CHECK (capacidadOcupada <= capacidad)
+ENABLE;
+
+--Creación de la tabla A_CARRITO
+
+CREATE TABLE CARRITO(id Number, idCliente Number,
+CONSTRAINT CARRITO_PK PRIMARY KEY (id));
+
+ALTER TABLE CARRITO
+ADD CONSTRAINT CARRITO_FK_Cliente
+FOREIGN KEY (idCliente)
+REFERENCES CLIENTE
+ENABLE;
+--Creación de la tabla TIPOPRODUCTO
+CREATE TABLE TIPOPRODUCTO(id Number, nombre varchar(40), categoria varchar(30), 
+CONSTRAINT PRODUCTOABSTRACTO_PK PRIMARY KEY (id));
+
+ALTER TABLE TIPOPRODUCTO
+ADD CONSTRAINT TIPOPRODUCTO_FK_categoria
+FOREIGN KEY (categoria)
+REFERENCES CATEGORIA
+ENABLE;
+
+
+--Creación de la tabla A_PRODUCTOABSTRACTO
+CREATE TABLE PRODUCTOABSTRACTO(id Number, nombre varchar(30), unidadMedida varchar(2), cantidadMedida Number, idTipo Number, 
+CONSTRAINT PRODABS_PK PRIMARY KEY (id));
+
+ALTER TABLE PRODUCTOABSTRACTO
+ADD CONSTRAINT PRODUCTOABSTRACTO_FK_categoria
+FOREIGN KEY (idTipo)
+REFERENCES TIPOPRODUCTO
+ENABLE;
+
+--Creación de la tabla OfrecidosSucursales
+CREATE TABLE OFRECIDOSUCURSAL(id Number, idAbstracto Number, idSucursal Number, precio Number,
+CONSTRAINT OFRECIDOSUCURSAL_PK PRIMARY KEY (id));
+
+ALTER TABLE OFRECIDOSUCURSAL
+ADD CONSTRAINT OFRECSUC_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES SUCURSAL
+ENABLE;
+
+ALTER TABLE OFRECIDOSUCURSAL
+ADD CONSTRAINT OFRECSUC_FK_idAbstracto
+FOREIGN KEY (idAbstracto)
+REFERENCES PRODUCTOABSTRACTO
+ENABLE;
+
+--Creación de la tabla A_OFRECIDOPROVEEDOR
+CREATE TABLE OFRECIDOPROVEEDOR(id Number, idAbstracto Number, nitProveedor Number, precio Number,
+CONSTRAINT OFRECIDOPROVEEDOR_PK PRIMARY KEY (id));
+
+ALTER TABLE OFRECIDOPROVEEDOR
+ADD CONSTRAINT OFRECPROV_FK_NIT
+FOREIGN KEY (nitProveedor)
+REFERENCES PROVEEDOR
+ENABLE;
+
+ALTER TABLE OFRECIDOPROVEEDOR
+ADD CONSTRAINT OFRECPROV_FK_idAbstracto
+FOREIGN KEY (idAbstracto)
+REFERENCES PRODUCTOABSTRACTO
+ENABLE;
+
+--Creación de la tabla A_PRODUCTOFISICO
+CREATE TABLE PRODUCTOFISICO(id Number, codigoBarras varchar(20), estado varchar(10), idTipo Number,
+CONSTRAINT PRODUCTOFISICO_PK PRIMARY KEY (id) );
+
+ALTER TABLE PRODUCTOFISICO
+ADD CONSTRAINT PRODUCTOFISICO_FK_idTipo
+FOREIGN KEY (idTipo)
+REFERENCES TIPOPRODUCTO
+ENABLE;
+
+--Creación de tabla Pedido
+CREATE TABLE PEDIDO  (id Number, idSucursal Number, nitProveedor Number, precio Number, estado varchar(10), fechaEntrega varchar(10), calidad varchar(15), calificacion Number,
+CONSTRAINT PEDIDO_PK PRIMARY KEY (id));
+
+ALTER TABLE PEDIDO
+ADD CONSTRAINT PEDIDO_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES SUCURSAL
+ENABLE;
+
+ALTER TABLE PEDIDO
+ADD CONSTRAINT PEDIDO_FK_nitProveedor
+FOREIGN KEY (nitProveedor)
+REFERENCES PROVEEDOR
+ENABLE;
+
+ALTER TABLE PEDIDO
+ADD CONSTRAINT PEDIDO_estado
+CHECK (estado IN('entregado', 'por_entregar'))
+ENABLE;
+
+ALTER TABLE PEDIDO
+ADD CONSTRAINT PEDIDO_calidad
+CHECK (calidad IN ('muy_mala', 'mala', 'regular', 'buena', 'muy_buena'))
+ENABLE;
+
+ALTER TABLE PEDIDO
+ADD CONSTRAINT PEDIDO_calificacion
+CHECK (calificacion IN (1,2,3,4,5))
+ENABLE;
+
+--Creación de tabla A_PRODUCTOPEDIDO
+CREATE TABLE PRODUCTOPEDIDO(idPedido Number, idProductoOfrecido Number, cantidad Number,
+CONSTRAINT PRODUCTOPEDIDO_PK PRIMARY KEY (idPedido, idProductoOfrecido));
+
+ALTER TABLE PRODUCTOPEDIDO
+ADD CONSTRAINT PRODPEDIDO_FK_idPedido
+FOREIGN KEY (idPedido)
+REFERENCES PEDIDO
+ENABLE;
+
+ALTER TABLE PRODUCTOPEDIDO
+ADD CONSTRAINT PRODPEDIDO_FK_idOfrecido
+FOREIGN KEY (idProductoOfrecido)
+REFERENCES OFRECIDOPROVEEDOR
+ENABLE;
+
+--Creación de tabla Promociones
+CREATE TABLE PROMOCION(id Number, idSucursal Number, descripcion varchar(130), tipo varchar(20), fecha_inicio varchar(10), fecha_fin varchar(10),
+CONSTRAINT PROMOCION_PK PRIMARY KEY (id));
+
+ALTER TABLE PROMOCION
+ADD CONSTRAINT PROMOCION_FK_idSucursal
+FOREIGN KEY (idSucursal)
+REFERENCES SUCURSAL
+ENABLE;
+
+ALTER TABLE PROMOCION
+ADD CONSTRAINT PROMOCION_tipo
+CHECK (tipo IN ('pague_n_lleve_m', 'pague_x_lleve_y', 'porcentaje_descuento', 'paquete_productos'))
+ENABLE;
+
+--Creación de tabla PromocionesPorCantidadOUnidad
+CREATE TABLE PROMPORCANTIDADOUNIDAD(idPromocion Number, idProductoOfrecido Number, cantidadOUnidadesPagadas Number, cantidadOUnidadesCompradas Number,
+CONSTRAINT PROMCANTIDADOUNIDAD_PK PRIMARY KEY (idPromocion));--Revisar <-- <-- <-- <--
+
+ALTER TABLE PROMPORCANTIDADOUNIDAD
+ADD CONSTRAINT PROMCANTOUNID_FK_idOfrecido
+FOREIGN KEY (idProductoOfrecido)
+REFERENCES OFRECIDOSUCURSAL
+ENABLE;
+
+ALTER TABLE PROMPORCANTIDADOUNIDAD
+ADD CONSTRAINT PROMCANTOUNID_FK_idProm
+FOREIGN KEY (idPromocion)
+REFERENCES PROMOCION
+ENABLE;
+
+--Creación de la tabla PromocionesPorcentajeDescuento
+CREATE TABLE PROMPORCENTAJEDESCUENTO(idPromocion Number, idProductoOfrecido Number, porcentajeDescuento Number,
+CONSTRAINT PROMPORCENTAJEDESCUENTO_PK PRIMARY KEY (idPromocion ));
+
+ALTER TABLE PROMPORCENTAJEDESCUENTO
+ADD CONSTRAINT PROMPORCDESC_FK_idOfrecido
+FOREIGN KEY (idProductoOfrecido)
+REFERENCES OFRECIDOSUCURSAL
+ENABLE;
+
+ALTER TABLE PROMPORCENTAJEDESCUENTO
+ADD CONSTRAINT PROMPORCDESC_FK_idProm
+FOREIGN KEY (idPromocion)
+REFERENCES PROMOCION
+ENABLE;
+
+--Creación de la tabla PromocionesPaqueteProductos
+CREATE TABLE PROMPAQUETEPRODUCTOS(idPromocion Number, precio Number, idProductoOfrecido1 Number, idProductoOfrecido2 Number,
+CONSTRAINT PROMPAQUETEPRODUCTOS_PK PRIMARY KEY(idPromocion));
+
+ALTER TABLE PROMPAQUETEPRODUCTOS
+ADD CONSTRAINT PROMPAQPROD_FK_idProm
+FOREIGN KEY (idPromocion)
+REFERENCES PROMOCION
+ENABLE;
+
+ALTER TABLE PROMPAQUETEPRODUCTOS
+ADD CONSTRAINT PROMPAQPROD_FK_idOfrecido1
+FOREIGN KEY (idProductoOfrecido1)
+REFERENCES OFRECIDOSUCURSAL
+ENABLE;
+
+ALTER TABLE PROMPAQUETEPRODUCTOS
+ADD CONSTRAINT PROMPAQPROD_FK_idOfrecido2
+FOREIGN KEY (idProductoOfrecido2)
+REFERENCES OFRECIDOSUCURSAL
+ENABLE;
+
+--Creación de tabla Facturas
+CREATE TABLE FACTURA(id Number, idCliente Number, idSucursal Number,  costoTotal Number, fecha varchar(10),
+CONSTRAINT FACTURA_PK PRIMARY KEY (id));
+
+ALTER TABLE FACTURA
+ADD CONSTRAINT FACTURA_FK_idCliente
+FOREIGN KEY (idCliente)
+REFERENCES CLIENTE
+ENABLE;
+
+ALTER TABLE FACTURA
+ADD CONSTRAINT FACTURA_FK_idSucursal
+FOREIGN KEY (idSucursal )
+REFERENCES SUCURSAL
+ENABLE;
+
+
+--Creación de tabla ItemsFacturas
+CREATE TABLE PRODUCTOFACTURA(idFactura Number, idProductoFisico Number, 
+CONSTRAINT PRODUCTOFACTURA_PK PRIMARY KEY (idFactura, idProductoFisico ));
+
+ALTER TABLE PRODUCTOFACTURA
+ADD CONSTRAINT PRODUCTOFACTURA_FK_idFactura
+FOREIGN KEY (idFactura)
+REFERENCES FACTURA
+ENABLE;
+
+ALTER TABLE PRODUCTOFACTURA
+ADD CONSTRAINT PRODFACTURA_FK_idProdFisico 
+FOREIGN KEY (idProductoFisico )
+REFERENCES PRODUCTOFISICO
+ENABLE;
+
+--Creación de tabla ProductoContenedor
+CREATE TABLE PRODUCTOCONTENEDOR(idContenedor Number, idProductoFisico Number, 
+CONSTRAINT PRODUCTOCONTENEDOR_PK PRIMARY KEY (idContenedor , idProductoFisico ));
+
+ALTER TABLE PRODUCTOCONTENEDOR
+ADD CONSTRAINT PRODCONTENEDOR_FK_idProdFisico 
+FOREIGN KEY (idProductoFisico )
+REFERENCES PRODUCTOFISICO
+ENABLE;
+ALTER TABLE PRODUCTOCONTENEDOR
+ADD CONSTRAINT PRODCONTENEDOR_FK_idContenedor 
+FOREIGN KEY (idContenedor )
+REFERENCES CONTENEDOR
+ENABLE;
+
+--Creación de tabla ProductoContenedor
+CREATE TABLE PRODUCTOCARRITO(idCarrito Number, idProductoFisico Number, 
+CONSTRAINT PRODUCTOCARRITO_PK PRIMARY KEY (idCarrito , idProductoFisico ));
+
+ALTER TABLE PRODUCTOCARRITO
+ADD CONSTRAINT PRODCARRITO_FK_idProdFisico 
+FOREIGN KEY (idProductoFisico )
+REFERENCES PRODUCTOFISICO
+ENABLE;
+ALTER TABLE PRODUCTOCARRITO
+ADD CONSTRAINT PRODARRITO_FK_idCarrito 
+FOREIGN KEY (idCarrito )
+REFERENCES CARRITO
+ENABLE;
+
+
+ALTER TABLE PRODUCTOFISICO ADD idAbstracto Number;
+
+ALTER TABLE PRODUCTOFISICO
+ADD CONSTRAINT PRODFISI_FK_PABSTRACTO
+FOREIGN KEY (idAbstracto)
+REFERENCES PRODUCTOABSTRACTO
+ENABLE;
+
+COMMIT;

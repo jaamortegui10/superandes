@@ -3,35 +3,44 @@ package uniandes.isis2304.superAndes.negocio;
 public class ProductoAbstracto implements VOProductoAbstracto{
 	private long id;
 	private String nombre;
-	private String tipo;
 	private String unidadMedida;
-	private String categoria;
+	private int cantidadMedida;
+	private long idTipo;
 	
 	public ProductoAbstracto()
 	{
 		
 	}
 	
-	
-
-	public ProductoAbstracto(long id, String nombre, String tipo, String unidadMedida, String categoria) {
+	public ProductoAbstracto(long id, String nombre, String unidadMedida, int cantidadMedida, long idTipo) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.tipo = tipo;
 		this.unidadMedida = unidadMedida;
-		this.categoria = categoria;
+		this.cantidadMedida = cantidadMedida;
+		this.idTipo = idTipo;
 	}
 	
-	
-	public String getCategoria() {
-		return categoria;
+	public int getCantidadMedida() {
+		return cantidadMedida;
 	}
 
 
 
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+	public void setCantidadMedida(int cantidadMedida) {
+		this.cantidadMedida = cantidadMedida;
+	}
+
+
+
+	public long getIdTipo() {
+		return idTipo;
+	}
+
+
+
+	public void setIdTipo(long idTipo) {
+		this.idTipo = idTipo;
 	}
 
 
@@ -50,14 +59,6 @@ public class ProductoAbstracto implements VOProductoAbstracto{
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 
 	public String getUnidadMedida() {

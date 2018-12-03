@@ -41,10 +41,10 @@ public class SQLContenedor {
 	 * @param capacidadOcupada
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, long sucursalId, String tipo, int capacidad, int capacidadOcupada, String tipoProducto)
+	public long agregarTupla(PersistenceManager pm, long id, long idSucursal, String tipo, int capacidad, int capacidadOcupada, String categoria)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaContenedor() + "(id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto) values (?, ?, ?, ?, ?, ?)");
-		q.setParameters(id, sucursalId, tipo, capacidad, capacidadOcupada, tipoProducto);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaContenedor() + "(id, idSucursal, tipo, capacidad, capacidadOcupada, categoria) values (?, ?, ?, ?, ?, ?)");
+		q.setParameters(id, idSucursal, tipo, capacidad, capacidadOcupada, categoria);
 		return (long) q.executeUnique();
 	}
 	
@@ -68,7 +68,7 @@ public class SQLContenedor {
 	 * @param sucursalId
 	 * @return
 	 */
-	public List<Contenedor> darContenedorPorSucursalId(PersistenceManager pm, long sucursalId)
+	public List<Contenedor> darContenedoresPorSucursalId(PersistenceManager pm, long sucursalId)
 	{
 		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE idSucursal = ?");
 		q.setResultClass(Contenedor.class);
@@ -76,11 +76,11 @@ public class SQLContenedor {
 		return (List<Contenedor>) q.executeList();
 	}
 	
-	public List<Contenedor> darContenedoresPorSucursalIdYTipoProducto(PersistenceManager pm, long sucursalId, String tipoProducto)
+	public List<Contenedor> darContenedoresPorSucursalIdYCategoria(PersistenceManager pm, long sucursalId, String categoria)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE idSucursal = ? AND tipoProducto = ?");
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaContenedor() + " WHERE idSucursal = ? AND categoria = ?");
 		q.setResultClass(Contenedor.class);
-		q.setParameters(sucursalId, tipoProducto);
+		q.setParameters(sucursalId, categoria);
 		return (List<Contenedor>) q.executeList();
 		
 	}

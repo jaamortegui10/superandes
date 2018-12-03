@@ -9,14 +9,15 @@ public class Sucursal implements VOSucursal{
 	private int nivelReorden;
 	private int nivelReAbastecimiento;
 	private long idCiudad;
+	private String password;
 	
 	public Sucursal()
 	{
 		
 	}
 	
-	public Sucursal(long id, String nombre, int tamanho, String direccion, int nivelReorden,
-			int nivelReAbastecimiento , long idCiudad) {
+	public Sucursal(long id, String nombre, int tamanho, String direccion, int nivelReorden, int nivelReAbastecimiento,
+			long idCiudad, String password) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -25,22 +26,25 @@ public class Sucursal implements VOSucursal{
 		this.nivelReorden = nivelReorden;
 		this.nivelReAbastecimiento = nivelReAbastecimiento;
 		this.idCiudad = idCiudad;
+		this.password = password;
 	}
 	
+	public String getPassword() {
+		return password;
+	}
 	
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	
 	public long getId() {
 		return id;
 	}
-
-
-
+	
 	public void setId(long id) {
 		this.id = id;
 	}
-
-
-
+	
 	public int getTamanho() {
 		return tamanho;
 	}

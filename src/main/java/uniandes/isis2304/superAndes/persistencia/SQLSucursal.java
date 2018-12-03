@@ -45,10 +45,10 @@ public class SQLSucursal {
 	 * @param idCiudad
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad)
+	public long agregarTupla(PersistenceManager pm, long id, String nombre, int tamanho, String direccion, int nivelReorden, int nivelReabastecimiento, long idCiudad, String password)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaSucursal() + "(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad) values (?, ?, ?, ?, ?, ?, ?)");
-		q.setParameters(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaSucursal() + "(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad, password) values (?, ?, ?, ?, ?, ?, ?, ?)");
+		q.setParameters(id, nombre, tamanho, direccion, nivelReorden, nivelReabastecimiento, idCiudad, password);
 		return (long) q.executeUnique();
 	}
 	

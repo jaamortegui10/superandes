@@ -4,24 +4,32 @@ public class OfrecidoSucursal implements VOOfrecidoSucursal{
 	
 	private long id;
 	private long idAbstracto;
-	private double precio;
 	private long idSucursal;
-
-
+	private double precio;
+	private String tipoPromocion;
+	
 	public OfrecidoSucursal() {
 		
 	}
-
-
-	public OfrecidoSucursal(long id, long idAbstracto, long idSucursal, double precio) {
+	
+	public OfrecidoSucursal(long id, long idAbstracto, long idSucursal, double precio, String tipoPromocion) {
 		super();
 		this.id = id;
 		this.idAbstracto = idAbstracto;
-		this.precio = precio;
 		this.idSucursal = idSucursal;
+		this.precio = precio;
+		this.tipoPromocion = tipoPromocion;
 	}
 	
 	
+	public String getTipoPromocion() {
+		return tipoPromocion;
+	}
+
+	public void setTipoPromocion(String tipoPromocion) {
+		this.tipoPromocion = tipoPromocion;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -55,14 +63,9 @@ public class OfrecidoSucursal implements VOOfrecidoSucursal{
 	public long getIdSucursal() {
 		return idSucursal;
 	}
-
-
+	
 	public void setIdSucursal(long idSucursal) {
 		this.idSucursal = idSucursal;
 	}
-
-	
-	
-	
 	
 }

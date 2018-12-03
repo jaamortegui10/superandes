@@ -53,51 +53,59 @@ public class SQLUtil {
 	 */
 	public long[] limpiarSuperAndes(PersistenceManager pm)
 	{
-		Query qUser = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaUser());
-		Query qPersona = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPersona());
-		Query qEmpresa = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaEmpresa());
-		Query qCiudad = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCiudad());
-		Query qSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaSucursal());
-		Query qProveedorSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProveedorSucursal());
+		Query qCarrito = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCarrito());
 		Query qCategoria = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCategoria());
-		Query qProductoAbstracto = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoAbstracto());
-		Query qOfrecidoSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaOfrecidoSucursal());
-		Query qOfrecidoProveedor = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaOfrecidoProveedor());
-		Query qProductoFisico = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoFisico());
+		Query qCiudad = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCiudad());
+		Query qCliente = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaCliente());
+		Query qClienteCarrito = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromPorcentajeDescuento());
 		Query qContenedor = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaContenedor());
-		Query qPedido = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPedido());
-		Query qProductoPedido = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoPedido());
-		Query qPromocion = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromocion());
-		Query qPromocionPorCantidadOUnidad = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromocionPorCantidadOUnidad());
-		Query qPromocionPorcentajeDescuento = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromocionPorcentajeDescuento());
-		Query qPromocionPaqueteProductos = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromocionPaqueteProductos());
 		Query qFactura = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaFactura());
-		Query qItemFactura = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaItemFactura());
-		
-		long userEliminados = (long) qUser.executeUnique();
-		long personaEliminados = (long) qPersona.executeUnique();
-		long empresaEliminados = (long) qEmpresa.executeUnique();
-		long ciudadEliminados = (long) qCiudad.executeUnique();
-		long sucursalEliminados = (long) qSucursal.executeUnique();
-		long proveedorSucursalEliminados = (long) qProveedorSucursal.executeUnique();
+		Query qOfrecidoProveedor = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaOfrecidoProveedor());
+		Query qOfrecidoSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaOfrecidoSucursal());
+		Query qPedido = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPedido());
+		Query qProductoAbstracto = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoAbstracto());
+		Query qProductoCarrito = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoCarrito());
+		Query qProductoContenedor = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoContenedor());
+		Query qProductoFactura = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoFactura());
+		Query qProductoFisico = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoFisico());
+		Query qProductoPedido = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProductoPedido());
+		Query qPromPaqueteProductos = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromPaqueteProductos());
+		Query qPromPorCantidadOUnidad = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromPorCantidadOUnidad());
+		Query qPromPorcentajeDescuento = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaPromPorcentajeDescuento());
+		Query qProveedor = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProveedor());
+		Query qProveedorSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaProveedorSucursal());
+		Query qSucursal = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaSucursal());
+		Query qTipoProducto = pm.newQuery(SQL, "DELETE FROM " + psa.darTablaTipoProducto());
+
+		long carritoEliminados = (long) qCarrito.executeUnique();
 		long categoriaEliminados = (long) qCategoria.executeUnique();
-		long productoAbstractoEliminados = (long) qProductoAbstracto.executeUnique();
-		long ofrecidoSucursalEliminados = (long) qOfrecidoSucursal.executeUnique();
-		long ofrecidoProveedorEliminados = (long) qOfrecidoProveedor.executeUnique();
-		long productoFisicoEliminados = (long) qProductoFisico.executeUnique();
+		long ciudadEliminados = (long) qCiudad.executeUnique();
+		long clienteEliminados = (long) qCliente.executeUnique();
+		long clienteCarritoEliminados = (long) qClienteCarrito.executeUnique();
 		long contenedorEliminados = (long) qContenedor.executeUnique();
-		long pedidoEliminados = (long) qPedido.executeUnique();
-		long productoPedidoEliminados = (long) qProductoPedido.executeUnique();
-		long promocionEliminados = (long) qPromocion.executeUnique();
-		long promocionPorCantidadOUnidadEliminados = (long) qPromocionPorCantidadOUnidad.executeUnique();
-		long promocionPorcentajeDescuentoEliminados = (long) qPromocionPorcentajeDescuento.executeUnique();
-		long promocionPaqueteProductosEliminados = (long) qPromocionPaqueteProductos.executeUnique();
 		long facturaEliminados = (long) qFactura.executeUnique();
-		long itemFacturaEliminados = (long) qItemFactura.executeUnique();
-		
-		return new long[] {userEliminados,personaEliminados,empresaEliminados,ciudadEliminados,sucursalEliminados,proveedorSucursalEliminados,
+		long ofrecidoProveedorEliminados = (long) qOfrecidoProveedor.executeUnique();
+		long ofrecidoSucursalEliminados = (long) qOfrecidoSucursal.executeUnique();
+		long pedidoEliminados = (long) qPedido.executeUnique();
+		long productoAbstractoEliminados = (long) qProductoAbstracto.executeUnique();
+		long productoCarritoEliminados = (long) qProductoCarrito.executeUnique();
+		long productoContenedorEliminados = (long) qProductoContenedor.executeUnique();
+		long productoFacturaEliminados = (long) qProductoFactura.executeUnique();
+		long productoFisicoEliminados = (long) qProductoFisico.executeUnique();
+		long productoPedidoEliminados = (long) qProductoPedido.executeUnique();
+		long promPaqueteProductosEliminados = (long) qPromPaqueteProductos.executeUnique();
+		long promPorCantidadOUnidadEliminados = (long) qPromPorCantidadOUnidad.executeUnique();
+		long promPorcentajeDescuentoEliminados = (long) qPromPorcentajeDescuento.executeUnique();
+		long proveedorEliminados = (long) qProveedor.executeUnique();
+		long proveedorSucursalEliminados = (long) qProveedorSucursal.executeUnique();
+		long sucursalEliminados = (long) qSucursal.executeUnique();
+		long tipoProductoEliminados = (long) qTipoProducto.executeUnique();
+
+		return new long[] {carritoEliminados,categoriaEliminados,ciudadEliminados,clienteEliminados,clienteCarritoEliminados,proveedorSucursalEliminados,
 				categoriaEliminados, productoAbstractoEliminados, ofrecidoSucursalEliminados, ofrecidoProveedorEliminados, productoFisicoEliminados,
-				contenedorEliminados, pedidoEliminados, productoPedidoEliminados, promocionEliminados, promocionPorCantidadOUnidadEliminados, 
-				promocionPorcentajeDescuentoEliminados, promocionPaqueteProductosEliminados, facturaEliminados, itemFacturaEliminados};
+				contenedorEliminados, pedidoEliminados, productoPedidoEliminados, productoCarritoEliminados, 
+				productoContenedorEliminados, productoFacturaEliminados, facturaEliminados, promPaqueteProductosEliminados,
+				promPorCantidadOUnidadEliminados, promPorcentajeDescuentoEliminados, proveedorEliminados, proveedorSucursalEliminados,
+				sucursalEliminados, tipoProductoEliminados};
 	}
 }

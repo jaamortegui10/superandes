@@ -5,4 +5,5 @@ public interface VOOfrecidoSucursal {
 	public long getIdAbstracto();
 	public double getPrecio();
 	public long getIdSucursal();
+	public String getTipoPromocion();
 }

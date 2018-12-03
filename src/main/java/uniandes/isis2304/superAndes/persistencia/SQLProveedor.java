@@ -5,9 +5,9 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import uniandes.isis2304.superAndes.negocio.Usuario;
+import uniandes.isis2304.superAndes.negocio.Proveedor;
 
-public class SQLUsuario {
+public class SQLProveedor {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
@@ -16,52 +16,41 @@ public class SQLUsuario {
 	/* ****************************************************************
 	 * 			Atributos
 	 *****************************************************************/
-	
 	private PersistenciaSuperAndes psa;
-	
 	
 	/* ****************************************************************
 	 * 			Métodos
 	 *****************************************************************/
-	
 	/**
 	 * Método constructor de la clase.
 	 * @param psa
 	 */
-	public SQLUsuario(PersistenciaSuperAndes psa)
+	public SQLProveedor(PersistenciaSuperAndes psa)
 	{
 		this.psa = psa;
 	}
 	
 	/**
-	 * Método que agrega nueva tupla.
+	 * Método que agrega una nueva tupla.
 	 * @param pm
 	 * @param id
-	 * @param password
-	 * @param nombre
-	 * @param correo
+	 * @param idSucursal
+	 * @param descripcion
 	 * @param tipo
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, String password, String nombre, String correo, String tipo)
+	public long agregarTupla(PersistenceManager pm, int nit, String nombre, String password, String dir, String conectado)
 	{
-		System.out.println("---------------->>>> Se está agregando un usuario.");
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaUser() + "(id, password, nombre, correo, tipo) values (?, ?, ?, ?, ?)");
-		q.setParameters(id, password, nombre, correo, tipo);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaProveedor() + "(nit, nombre, password, dir, conectado) values (?, ?, ?, ?, ?)");
+		q.setParameters(nit, nombre, password, dir, conectado);
 		return (long) q.executeUnique();
 	}
 	
-	/**
-	 * Método que retorna todas las tuplas.
-	 * @param pm
-	 * @return
-	 */
-	public List<Usuario> darUsuarios(PersistenceManager pm)
+	public List<Proveedor> darProveedores(PersistenceManager pm)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaUser());
-		q.setResultClass(Usuario.class);
-		return (List<Usuario>) q.executeList();
+		System.out.println("************************************ \n Tabla proveedor: " + psa.darTablaProveedor());
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaProveedor());
+		q.setResultClass(Proveedor.class);
+		return (List<Proveedor>) q.executeList();
 	}
-	
-	
 }

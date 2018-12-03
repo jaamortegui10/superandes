@@ -63,16 +63,16 @@ public class SQLCarrito {
 	 * @param idUser
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long id, long idUser)
+	public long agregarTupla(PersistenceManager pm, long id, long idSucursal, String ocupado)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCarrito() +"(id, idUser) values (?, ?)");
-		q.setParameters(id, idUser);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaCarrito() +"(id, idSucursal, ocupado) values (?, ?, ?)");
+		q.setParameters(id, idSucursal, ocupado);
 		return (long) q.executeUnique();
 	}
 	
-	public List<Carrito> darCarritosAbandonados(PersistenceManager pm)
+	public List<Carrito> darCarritosSolitarios(PersistenceManager pm)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaCarrito() +" WHERE idUser = null");
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaCarrito() +" WHERE ocupado = 'no'");
 		q.setResultClass(Carrito.class);
 		return (List<Carrito>) q.executeList();
 	}
@@ -90,9 +90,9 @@ public class SQLCarrito {
 		return (long) q.executeUnique();
 	}
 	
-	public long cambiarIdUserANull(PersistenceManager pm, long idCarrito)
+	public long devolver(PersistenceManager pm, long idCarrito)
 	{
-		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaCarrito() + " SET idUser = null WHERE id = ?");
+		Query q = pm.newQuery(SQL, "UPDATE " + psa.darTablaCarrito() + " SET ocupado = 'no' WHERE id = ?");
 		q.setParameters(idCarrito);
 		return (long) q.executeUnique();
 	

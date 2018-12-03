@@ -4,6 +4,5 @@ public interface VOCategoria {
 	
 	public String getNombre();
 	public String getCaracteristicas();
-	public String getAlmacenamiento();
 	public String getManejo();
 }

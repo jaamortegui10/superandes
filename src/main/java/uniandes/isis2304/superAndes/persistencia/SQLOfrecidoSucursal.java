@@ -13,6 +13,11 @@ public class SQLOfrecidoSucursal {
 	 *****************************************************************/
 	private final static String SQL = PersistenciaSuperAndes.SQL;
 	
+	public final static String POR_CANTIDAD_O_UNIDAD = "por_cantidad_o_unidad";
+	public final static String PORCENTAJE_DESCUENTO = "porcentaje_descuento";
+	public final static String PAQUETE_PRODUCTOS = "paquete_productos";
+	public final static String NINGUNA = "ninguna";
+	
 	/* ****************************************************************
 	 * 			Atributos
 	 *****************************************************************/
@@ -40,8 +45,8 @@ public class SQLOfrecidoSucursal {
 	 */
 	public long agregarTupla(PersistenceManager pm, long id, long idAbstracto, long idSucursal, double precio)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO "+psa.darTablaOfrecidoSucursal() + "(id, idAbstracto, idSucursal, precio) values (?, ?, ?, ?)");
-		q.setParameters(id, idAbstracto, idSucursal, precio);
+		Query q = pm.newQuery(SQL, "INSERT INTO "+psa.darTablaOfrecidoSucursal() + "(id, idAbstracto, idSucursal, precio, tipoPromocion) values (?, ?, ?, ?, ?)");
+		q.setParameters(id, idAbstracto, idSucursal, precio, NINGUNA);
 		return (long) q.executeUnique();
 		
 	}

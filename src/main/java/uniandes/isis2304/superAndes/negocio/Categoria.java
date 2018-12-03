@@ -4,7 +4,6 @@ public class Categoria implements VOCategoria{
 	
 	private String nombre;
 	private String caracteristicas;
-	private String almacenamiento;
 	private String manejo;
 	
 	/**
@@ -14,7 +13,6 @@ public class Categoria implements VOCategoria{
 	{
 		this.nombre = "defaultName";
 		this.caracteristicas = "default";
-		this.almacenamiento = "default";
 		this.manejo = "default";
 	}
 	
@@ -25,11 +23,10 @@ public class Categoria implements VOCategoria{
 	 * @param almacenamiento
 	 * @param manejo
 	 */
-	public Categoria(String nombre, String caracteristicas, String almacenamiento, String manejo)
+	public Categoria(String nombre, String caracteristicas, String manejo)
 	{
 		this.nombre = nombre;
 		this.caracteristicas = caracteristicas;
-		this.almacenamiento = almacenamiento;
 		this.manejo = manejo;
 	}
 	
@@ -46,20 +43,12 @@ public class Categoria implements VOCategoria{
 		this.caracteristicas = caracteristicas;
 	}
 
-	public void setAlmacenamiento(String almacenamiento) {
-		this.almacenamiento = almacenamiento;
-	}
-
 	public void setManejo(String manejo) {
 		this.manejo = manejo;
 	}
 
 	public String getCaracteristicas() {
 		return caracteristicas;
-	}
-
-	public String getAlmacenamiento() {
-		return almacenamiento;
 	}
 
 	public String getManejo() {

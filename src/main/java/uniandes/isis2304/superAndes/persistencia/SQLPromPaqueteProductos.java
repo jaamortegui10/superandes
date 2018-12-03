@@ -5,7 +5,7 @@ import javax.jdo.Query;
 
 import uniandes.isis2304.superAndes.negocio.PromocionPaqueteProductos;
 
-public class SQLPromocionPaqueteProductos {
+public class SQLPromPaqueteProductos {
 	/* ****************************************************************
 	 * 			Constantes
 	 *****************************************************************/
@@ -23,7 +23,7 @@ public class SQLPromocionPaqueteProductos {
 	 * Método constructor de la clase.
 	 * @param psa
 	 */
-	public SQLPromocionPaqueteProductos(PersistenciaSuperAndes psa)
+	public SQLPromPaqueteProductos(PersistenciaSuperAndes psa)
 	{
 		this.psa = psa;
 	}
@@ -37,10 +37,10 @@ public class SQLPromocionPaqueteProductos {
 	 * @param idProductoOfrecido2
 	 * @return
 	 */
-	public long agregarTupla(PersistenceManager pm, long idPromocion, double precio, long idProductoOfrecido1, long idProductoOfrecido2)
+	public long agregarTupla(PersistenceManager pm, long id, double precio, long idProductoOfrecido1, long idProductoOfrecido2, long idSucursal, String fecha_inicio, String fecha_fin, String descripcion)
 	{
-		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPromocionPaqueteProductos() + "(idPromocion, precio, idProductoOfrecido1, idProductoOfrecido2) values (?, ?, ?, ?)");
-		q.setParameters(idPromocion, precio, idProductoOfrecido1, idProductoOfrecido2);
+		Query q = pm.newQuery(SQL, "INSERT INTO " + psa.darTablaPromPaqueteProductos() + "(id, precio, idProductoOfrecido1, idProductoOfrecido2, idSucursal, fecha_inicio, fecha_fin, descripcion) values (?, ?, ?, ?, ?, ?, ?, ?)");
+		q.setParameters(id, precio, idProductoOfrecido1, idProductoOfrecido2, idSucursal, fecha_inicio, fecha_fin, descripcion);
 		return (long) q.executeUnique();
 	}
 	
@@ -53,7 +53,7 @@ public class SQLPromocionPaqueteProductos {
 	 */
 	public PromocionPaqueteProductos darPromocionPorIdPromocion(PersistenceManager pm, long idPromocion)
 	{
-		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaPromocionPaqueteProductos() + " WHERE idPromocion = ?");
+		Query q = pm.newQuery(SQL, "SELECT * FROM " + psa.darTablaPromPaqueteProductos() + " WHERE idPromocion = ?");
 		q.setResultClass(PromocionPaqueteProductos.class);
 		q.setParameters(idPromocion);
 		return (PromocionPaqueteProductos) q.executeUnique();
